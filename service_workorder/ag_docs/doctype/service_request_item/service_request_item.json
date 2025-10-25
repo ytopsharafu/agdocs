@@ -10,6 +10,7 @@
   "qty",
   "gov_charge",
   "service_charge",
+  "amount",
   "payment_type",
   "status",
   "remarks"
@@ -40,15 +41,14 @@
    "fieldname": "gov_charge",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Gov Charge",
-   "reqd": 1
+   "label": "Gov Charge"
   },
   {
    "fieldname": "service_charge",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Service Charge",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "payment_type",
@@ -61,20 +61,26 @@
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
-   "options": "Pending\nWaiting For Payment\nCompleted\nCancelled",
+   "options": "Pending\nWaiting For Payment\nCompleted",
    "reqd": 1
   },
   {
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-10-13 11:30:52.081878",
+ "modified": "2025-10-24 17:46:29.604223",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Request Item",

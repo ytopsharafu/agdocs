@@ -6,6 +6,10 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "status_summary",
+  "status_summary_text",
+  "column_break_hekn",
+  "sales_order_ref",
   "customer_details_section",
   "naming_series",
   "customer_name",
@@ -13,10 +17,16 @@
   "column_break_mrll",
   "date",
   "dep_emp_name",
-  "employee_type",
-  "department_no",
+  "employee_details_summary",
   "work_details_section",
-  "work_details"
+  "work_details",
+  "section_break_xbgx",
+  "price_list",
+  "column_break_brme",
+  "service_charge_tab",
+  "table_sgku",
+  "connections_tab",
+  "amended_from"
  ],
  "fields": [
   {
@@ -29,7 +39,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Series",
-   "options": "SRV-ORD-YYYY-",
+   "options": "SRV-ORD-",
    "reqd": 1
   },
   {
@@ -61,24 +71,11 @@
    "search_index": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "dep_emp_name",
    "fieldtype": "Link",
-   "label": "Employee Name",
+   "label": "Employee/Dependent Name",
    "options": "Customer Employee Registration"
-  },
-  {
-   "fieldname": "employee_type",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Employee Type",
-   "read_only": 1
-  },
-  {
-   "fieldname": "department_no",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Department No",
-   "read_only": 1
   },
   {
    "fieldname": "work_details_section",
@@ -91,12 +88,87 @@
    "label": "Details",
    "options": "Service Request Item",
    "reqd": 1
+  },
+  {
+   "fieldname": "service_charge_tab",
+   "fieldtype": "Tab Break",
+   "label": "Service Charge",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "table_sgku",
+   "fieldtype": "Table",
+   "options": "Service Charge Item"
+  },
+  {
+   "fieldname": "connections_tab",
+   "fieldtype": "Tab Break",
+   "label": "Connections",
+   "show_dashboard": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Service Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "employee_details_summary",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Details",
+   "max_height": "70px",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_xbgx",
+   "fieldtype": "Section Break",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "column_break_brme",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "label": "Price List",
+   "options": "Price List"
+  },
+  {
+   "fieldname": "status_summary",
+   "fieldtype": "HTML",
+   "label": "Status"
+  },
+  {
+   "fieldname": "status_summary_text",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status Summary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hekn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_order_ref",
+   "fieldtype": "Link",
+   "label": "Sales Order Ref",
+   "options": "Sales Order"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-10-13 11:30:43.230218",
+ "modified": "2025-10-24 18:19:09.685516",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Request",
@@ -113,6 +185,33 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Employee",
+   "share": 1,
+   "submit": 1,
    "write": 1
   }
  ],
@@ -120,5 +219,7 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1
 }

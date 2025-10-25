@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-10-21 18:00:23.758559",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "qty",
+  "service_charge"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item",
+   "print_width": "150",
+   "width": "150"
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty",
+   "print_width": "100",
+   "width": "100"
+  },
+  {
+   "fieldname": "service_charge",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Service Charge"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-10-22 09:49:19.419399",
+ "modified_by": "Administrator",
+ "module": "Ag Docs",
+ "name": "Service Charge Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,13 +1,12 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "field:full_name",
  "creation": "2025-10-07 15:12:10.965162",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "section_break_x7nc",
-  "naming_series",
   "amended_from",
   "customer_name",
   "first_name",
@@ -16,6 +15,7 @@
   "column_break_ltuj",
   "employee_type",
   "dep_emp_name",
+  "linked_emp_info",
   "column_break_dzge",
   "dep_no",
   "dep_no1",
@@ -40,16 +40,6 @@
    "fieldname": "section_break_x7nc",
    "fieldtype": "Section Break",
    "label": "Customer Employee Registration"
-  },
-  {
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Series",
-   "no_copy": 1,
-   "options": "CUS-EMP#",
-   "print_hide": 1,
-   "reqd": 1,
-   "set_only_once": 1
   },
   {
    "fieldname": "amended_from",
@@ -83,7 +73,8 @@
    "fieldname": "full_name",
    "fieldtype": "Data",
    "label": "Full Name",
-   "read_only": 1
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "column_break_ltuj",
@@ -197,17 +188,24 @@
    "fieldname": "mother_name",
    "fieldtype": "Data",
    "label": "Mother Name"
+  },
+  {
+   "depends_on": "eval:doc.employee_type==\"Dependent\"",
+   "fieldname": "linked_emp_info",
+   "fieldtype": "Small Text",
+   "label": "Details",
+   "max_height": "50px",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "links": [],
- "modified": "2025-10-13 11:30:34.804526",
+ "modified": "2025-10-23 15:34:59.509192",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Customer Employee Registration",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "By fieldname",
  "owner": "ytopsharafu@gmail.com",
  "permissions": [
   {
@@ -220,7 +218,6 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],
