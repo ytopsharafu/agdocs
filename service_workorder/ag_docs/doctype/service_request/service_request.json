@@ -6,26 +6,34 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "section_break_pyyu",
   "status_summary",
   "status_summary_text",
   "column_break_hekn",
   "sales_order_ref",
+  "column_break_mogc",
+  "company",
+  "service_charge_slab",
+  "column_break_jnmz",
   "customer_details_section",
   "naming_series",
-  "customer_name",
+  "customer",
   "job_item",
   "column_break_mrll",
   "date",
   "dep_emp_name",
-  "employee_details_summary",
-  "work_details_section",
+  "employee_type",
+  "department_no",
+  "eid_no",
+  "service_request_item",
   "work_details",
   "section_break_xbgx",
   "price_list",
   "column_break_brme",
-  "service_charge_tab",
+  "taxes_and_charges",
   "table_sgku",
   "connections_tab",
+  "service_request",
   "amended_from"
  ],
  "fields": [
@@ -40,14 +48,6 @@
    "in_list_view": 1,
    "label": "Series",
    "options": "SRV-ORD-",
-   "reqd": 1
-  },
-  {
-   "fieldname": "customer_name",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Customer Name",
-   "options": "Customer",
    "reqd": 1
   },
   {
@@ -78,11 +78,6 @@
    "options": "Customer Employee Registration"
   },
   {
-   "fieldname": "work_details_section",
-   "fieldtype": "Section Break",
-   "label": "Work Details"
-  },
-  {
    "fieldname": "work_details",
    "fieldtype": "Table",
    "label": "Details",
@@ -90,41 +85,16 @@
    "reqd": 1
   },
   {
-   "fieldname": "service_charge_tab",
-   "fieldtype": "Tab Break",
-   "label": "Service Charge",
-   "print_hide": 1
-  },
-  {
    "fieldname": "table_sgku",
    "fieldtype": "Table",
-   "options": "Service Charge Item"
+   "options": "Sales Taxes and Charges",
+   "print_hide": 1
   },
   {
    "fieldname": "connections_tab",
    "fieldtype": "Tab Break",
    "label": "Connections",
    "show_dashboard": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Service Request",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "employee_details_summary",
-   "fieldtype": "Small Text",
-   "in_list_view": 1,
-   "in_preview": 1,
-   "label": "Details",
-   "max_height": "70px",
-   "read_only": 1
   },
   {
    "fieldname": "section_break_xbgx",
@@ -139,18 +109,22 @@
    "fieldname": "price_list",
    "fieldtype": "Link",
    "label": "Price List",
-   "options": "Price List"
+   "options": "Price List",
+   "print_hide": 1
   },
   {
    "fieldname": "status_summary",
    "fieldtype": "HTML",
-   "label": "Status"
+   "label": "Status",
+   "print_hide": 1
   },
   {
    "fieldname": "status_summary_text",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Status Summary",
+   "print_hide": 1,
    "read_only": 1
   },
   {
@@ -162,13 +136,89 @@
    "fieldtype": "Link",
    "label": "Sales Order Ref",
    "options": "Sales Order"
+  },
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Service Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "taxes_and_charges",
+   "fieldtype": "Tab Break",
+   "label": "Taxes and Charges",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "service_request_item",
+   "fieldtype": "Section Break",
+   "label": "Work Details"
+  },
+  {
+   "fieldname": "column_break_mogc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "service_charge_slab",
+   "fieldtype": "Link",
+   "label": "Service Charge Slab",
+   "options": "Service Charge Slab",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "column_break_jnmz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_type",
+   "fieldtype": "Data",
+   "label": "Employee Type"
+  },
+  {
+   "fieldname": "department_no",
+   "fieldtype": "Data",
+   "label": "Department No"
+  },
+  {
+   "fieldname": "eid_no",
+   "fieldtype": "Data",
+   "label": "EID Number"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_pyyu",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-10-24 18:19:09.685516",
+ "modified": "2025-11-03 14:08:23.190712",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Request",

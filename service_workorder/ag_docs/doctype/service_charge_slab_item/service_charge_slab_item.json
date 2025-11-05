@@ -1,36 +1,29 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-10-21 18:00:23.758559",
+ "creation": "2025-10-31 17:43:43.222138",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "item_code",
-  "qty",
+  "slab_name",
+  "item",
+  "item_name",
   "service_charge",
-  "tax_applicable",
-  "rate_source"
+  "tax_applicable"
  ],
  "fields": [
   {
-   "default": "1",
-   "fieldname": "tax_applicable",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "label": "Tax Applicable"
+   "fieldname": "slab_name",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "rate_source",
-   "fieldtype": "Data",
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_global_search": 1,
    "in_list_view": 1,
-   "label": "Rate Source"
-  },
-  {
-   "fieldname": "qty",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Qty"
+   "label": "Item",
+   "options": "Item"
   },
   {
    "fieldname": "service_charge",
@@ -39,22 +32,29 @@
    "label": "Service Charge"
   },
   {
-   "fieldname": "item_code",
-   "fieldtype": "Link",
-   "in_global_search": 1,
+   "default": "1",
+   "fieldname": "tax_applicable",
+   "fieldtype": "Check",
    "in_list_view": 1,
-   "label": "Item",
-   "options": "Item"
+   "label": "VAT Applicable"
+  },
+  {
+   "fetch_from": "item.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-10-31 19:49:08.193096",
+ "modified": "2025-11-01 13:01:21.627000",
  "modified_by": "Administrator",
  "module": "Ag Docs",
- "name": "Service Charge Item",
+ "name": "Service Charge Slab Item",
  "owner": "Administrator",
  "permissions": [],
  "row_format": "Dynamic",

@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "item_code",
+  "item_name",
   "qty",
   "gov_charge",
   "service_charge",
@@ -28,6 +29,7 @@
    "width": "150px"
   },
   {
+   "default": "1",
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -47,14 +49,14 @@
    "fieldname": "service_charge",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Service Charge",
-   "read_only": 1
+   "label": "Service Charge"
   },
   {
    "fieldname": "payment_type",
    "fieldtype": "Link",
    "label": "Payment Type",
    "options": "Mode of Payment",
+   "print_hide": 1,
    "reqd": 1
   },
   {
@@ -62,6 +64,7 @@
    "fieldtype": "Select",
    "label": "Status",
    "options": "Pending\nWaiting For Payment\nCompleted",
+   "print_hide": 1,
    "reqd": 1
   },
   {
@@ -74,13 +77,18 @@
    "fieldtype": "Currency",
    "label": "Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-10-24 17:46:29.604223",
+ "modified": "2025-11-03 10:36:42.414791",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Request Item",
