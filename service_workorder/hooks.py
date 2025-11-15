@@ -9,12 +9,11 @@ app_license = "mit"
 fixtures = [
     {
         "doctype": "Client Script",
-        "filters": [["module", "=", "Ag Docs"]]
+        "filters": [
+            ["module", "=", "Ag Docs"]
+        ]
     },
-    "Custom Field"
-]
-
-fixtures = [
+    "Custom Field",
     {"doctype": "Number Card"}
 ]
 
