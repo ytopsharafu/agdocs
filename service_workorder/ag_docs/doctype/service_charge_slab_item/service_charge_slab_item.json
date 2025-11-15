@@ -23,13 +23,15 @@
    "in_global_search": 1,
    "in_list_view": 1,
    "label": "Item",
-   "options": "Item"
+   "options": "Item",
+   "reqd": 1
   },
   {
    "fieldname": "service_charge",
    "fieldtype": "Currency",
    "in_list_view": 1,
-   "label": "Service Charge"
+   "label": "Service Charge",
+   "reqd": 1
   },
   {
    "default": "1",
@@ -51,7 +53,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-01 13:01:21.627000",
+ "modified": "2025-11-10 19:32:28.737920",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Charge Slab Item",

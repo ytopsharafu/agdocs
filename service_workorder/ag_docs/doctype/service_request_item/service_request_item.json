@@ -12,8 +12,9 @@
   "gov_charge",
   "service_charge",
   "amount",
-  "payment_type",
   "status",
+  "payment_type",
+  "row_id",
   "remarks"
  ],
  "fields": [
@@ -55,9 +56,9 @@
    "fieldname": "payment_type",
    "fieldtype": "Link",
    "label": "Payment Type",
+   "mandatory_depends_on": "eval:doc.status==\"Completed\"\n",
    "options": "Mode of Payment",
-   "print_hide": 1,
-   "reqd": 1
+   "print_hide": 1
   },
   {
    "fieldname": "status",
@@ -65,6 +66,7 @@
    "label": "Status",
    "options": "Pending\nWaiting For Payment\nCompleted",
    "print_hide": 1,
+   "read_only_depends_on": "\n",
    "reqd": 1
   },
   {
@@ -82,13 +84,20 @@
    "fieldname": "item_name",
    "fieldtype": "Data",
    "label": "Item Name"
+  },
+  {
+   "fieldname": "row_id",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Row ID",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-03 10:36:42.414791",
+ "modified": "2025-11-14 11:32:02.606677",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Request Item",

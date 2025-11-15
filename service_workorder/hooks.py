@@ -5,6 +5,48 @@ app_description = "Using for tracking workorder"
 app_email = "ytopsharafu@gmail.com"
 app_license = "mit"
 
+# Export client scripts automatically
+fixtures = [
+    {
+        "doctype": "Client Script",
+        "filters": [["module", "=", "Ag Docs"]]
+    },
+    "Custom Field"
+]
+
+doc_events = {
+    "Sales Order": {
+        "on_trash": "service_workorder.api.clear_sr_links",
+        "on_cancel": "service_workorder.api.clear_sr_links",
+        "on_update_after_submit": "service_workorder.api.update_amended_link"
+    },
+    "Sales Invoice": {
+        "on_trash": "service_workorder.api.clear_sr_links",
+        "on_cancel": "service_workorder.api.clear_sr_links",
+        "on_update_after_submit": "service_workorder.api.update_amended_link"
+    }
+}
+
+doc_events = {
+    "Service Request": {
+        # Block cancel/delete if linked SO/SI is still active
+        "before_cancel": "service_workorder.api.validate_sr_cancel_or_delete",
+        "before_trash": "service_workorder.api.validate_sr_cancel_or_delete",
+    },
+    "Sales Order": {
+        "on_trash": "service_workorder.api.clear_sr_links",
+        "on_cancel": "service_workorder.api.clear_sr_links",
+        "on_update_after_submit": "service_workorder.api.update_amended_link",
+    },
+    "Sales Invoice": {
+        "on_trash": "service_workorder.api.clear_sr_links",
+        "on_cancel": "service_workorder.api.clear_sr_links",
+        "on_update_after_submit": "service_workorder.api.update_amended_link",
+    }
+}
+
+
+
 # Apps
 # ------------------
 

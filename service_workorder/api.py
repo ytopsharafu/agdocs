@@ -1,171 +1,301 @@
 import frappe
-from frappe.utils import nowdate
+from frappe.utils import nowdate, add_days
 
-# service charge laoder
+
+# ============================================================
+# COMMON: Prevent double creation (ONLY one allowed - SO or SI)
+# ============================================================
+def _check_existing_links(sr):
+    if getattr(sr, "sales_order_ref", None):
+        frappe.throw(f"❗ Sales Order already exists: <b>{sr.sales_order_ref}</b>")
+    if getattr(sr, "sales_invoice_ref", None):
+        frappe.throw(f"❗ Sales Invoice already exists: <b>{sr.sales_invoice_ref}</b>")
+
+
+# ============================================================
+# LOAD TAX TEMPLATE (Used in client script)
+# ============================================================
+@frappe.whitelist()
+def load_sales_taxes(template_name=None, company=None):
+    if not template_name:
+        return []
+
+    doc = frappe.get_doc("Sales Taxes and Charges Template", template_name)
+    return [
+        {
+            "charge_type": tax.charge_type,
+            "account_head": tax.account_head,
+            "description": tax.description,
+            "rate": tax.rate,
+            "cost_center": tax.cost_center,
+        }
+        for tax in doc.taxes
+    ]
+
+
+# ============================================================
+# LOAD SERVICE CHARGE FROM SLAB
+# ============================================================
 @frappe.whitelist()
 def get_service_charge_from_slab(slab_name, item_code):
-    """Fetch the service charge for the given item from the given slab"""
     if not slab_name or not item_code:
         return {}
-
-    result = frappe.db.get_value(
+    return frappe.db.get_value(
         "Service Charge Slab Item",
         {"parent": slab_name, "item": item_code},
-        ["service_charge"],
+        "service_charge",
         as_dict=True
-    )
-    return result or {}
+    ) or {}
+
 
 # ============================================================
-# 1️⃣ Fetch Service Charge for Item (used by Client Script)
+# GET SALES TAX TEMPLATE USING CORRECT FIELD
 # ============================================================
 @frappe.whitelist()
-def get_item_service_charge(slab, item):
-    """Return service charge for an item from the given slab."""
-    rows = frappe.get_all(
-        "Service Charge Slab Item",
-        filters={"parent": slab, "item": item},
-        fields=["service_charge", "tax_applicable"],
-        limit=1,
-        ignore_permissions=True,  # ✅ bypasses permission check
-    )
-    return rows[0] if rows else {}
+def get_sales_tax_template(company, tax_category):
+    if not company or not tax_category:
+        return ""
+
+    return frappe.db.get_value(
+        "Tax Rule",
+        {
+            "company": company,
+            "tax_type": "Sales",
+            "tax_category": tax_category,
+        },
+        "sales_tax_template"
+    ) or ""
 
 
 # ============================================================
-# 2️⃣ Create Sales Order from Service Request
+# 1️⃣ CREATE SALES ORDER FROM SERVICE REQUEST
 # ============================================================
 @frappe.whitelist()
 def create_sales_order_from_service_request(service_request):
-    """Open new Sales Order prefilled with main & SRV items from both tabs (grouped by item)."""
-    if not service_request:
-        frappe.throw("Service Request ID is required")
-
     sr = frappe.get_doc("Service Request", service_request)
 
-    # --- Detect customer field ---
-    customer = getattr(sr, "customer", None) or getattr(sr, "customer_name", None) or getattr(sr, "client", None)
-    if not customer:
-        frappe.throw("Customer not found in Service Request")
+    # Prevent double creation
+    _check_existing_links(sr)
 
-    # --- Create Sales Order ---
+    # Create SO
     so = frappe.new_doc("Sales Order")
-    so.customer = customer
-    so.company = getattr(sr, "company", None)
-    so.service_request = sr.name  # (Add a Link field in Sales Order)
-    so.set("items", [])
+    so.customer = sr.customer
+    so.company = sr.company
+    so.transaction_date = nowdate()
+    so.delivery_date = add_days(nowdate(), 1)
 
-    # --- Map SRV items by main item_code ---
-    srv_map = {}
-    if hasattr(sr, "table_sgku"):
-        for srv in sr.table_sgku:
-            if srv.item_code:
-                clean_code = srv.item_code.replace("SRV ", "").strip()
-                srv_map[clean_code] = srv
+    # Mandatory fields
+    so.tax_category = sr.tax_category
+    so.selling_price_list = sr.price_list
+    so.price_list_currency = frappe.db.get_value("Price List", sr.price_list, "currency")
+    so.custom_service_charge_slab = sr.service_charge_slab
+    so.taxes_and_charges = sr.sales_taxes_and_charges_template
 
-    # --- Add main items and related SRV items ---
-    if hasattr(sr, "work_details"):
-        for main in sr.work_details:
-            total_rate = (main.gov_charge or 0) + (main.service_charge or 0)
-            so.append("items", {
-                "item_code": main.item_code,
-                "qty": main.qty,
-                "rate": total_rate,
-                "description": f"Main Item | Gov: {main.gov_charge or 0}, SRV: {main.service_charge or 0}",
-            })
+    # Employee info
+    so.custom_employee = sr.dep_emp_name or ""
+    so.custom_employee_type = sr.employee_type or ""
+    so.custom_dep_no = sr.department_no or ""
+    so.custom_uid_no = sr.uid_no or ""
 
-            # related SRV item (if any)
-            srv_row = srv_map.get(main.item_code)
-            if srv_row:
-                so.append("items", {
-                    "item_code": srv_row.item_code,
-                    "qty": srv_row.qty or main.qty,
-                    "rate": srv_row.service_charge or 0,
-                    "description": f"→ SRV for {main.item_code} | Service Charge: {srv_row.service_charge or 0}",
-                })
+    # NAMING SERIES
+    customer_group = frappe.db.get_value("Customer", sr.customer, "customer_group")
+    if customer_group == "VAT":
+        so.naming_series = "SAL-ORD-.YYYY.-"
+    elif customer_group == "NON VAT":
+        so.naming_series = "SAL-ORD-NV-.YYYY.-"
+    else:
+        so.naming_series = "SAL-ORD-.YYYY.-"
 
-    # --- Add unlinked SRV items ---
-    if hasattr(sr, "table_sgku"):
-        for srv in sr.table_sgku:
-            linked = any(
-                srv.item_code.replace("SRV ", "").strip() == m.item_code
-                for m in sr.work_details or []
-            )
-            if not linked:
-                so.append("items", {
-                    "item_code": srv.item_code,
-                    "qty": srv.qty or 1,
-                    "rate": srv.service_charge or 0,
-                    "description": f"Unlinked SRV Item | Service Charge: {srv.service_charge or 0}",
-                })
+    # Add items
+    for row in sr.work_details:
+        item_name, stock_uom = frappe.db.get_value("Item", row.item_code, ["item_name", "stock_uom"])
+        so.append("items", {
+            "item_code": row.item_code,
+            "item_name": item_name,
+            "qty": row.qty,
+            "uom": stock_uom,
+            "rate": row.gov_charge,
+            "custom_service_charge": row.service_charge,
+            "custom_total_with_service_charge": row.amount,
+            "description": row.item_code,
+            "delivery_date": add_days(nowdate(), 1),
+        })
 
-    return so.as_dict()
+    # Add taxes WITH row_id FIX
+    so.set("taxes", [])
+    if sr.sales_taxes_and_charges_template:
+        template = frappe.get_doc("Sales Taxes and Charges Template", sr.sales_taxes_and_charges_template)
+
+        for idx, t in enumerate(template.taxes, start=1):
+            tax_row = {
+                "charge_type": t.charge_type,
+                "account_head": t.account_head,
+                "rate": t.rate,
+                "description": t.description,
+                "cost_center": t.cost_center
+            }
+
+            # REQUIRED row_id assignment
+            if t.charge_type in ["On Previous Row Amount", "On Previous Row Total"]:
+                tax_row["row_id"] = idx - 1
+
+            so.append("taxes", tax_row)
+
+    # Insert
+    so.flags.ignore_permissions = True
+    so.flags.ignore_mandatory = True
+    so.insert(ignore_permissions=True)
+    so.save(ignore_permissions=True)
+
+    # Link back
+    frappe.db.set_value("Service Request", sr.name, "sales_order_ref", so.name)
+
+    return {"name": so.name}
 
 
 # ============================================================
-# 3️⃣ Create Sales Invoice from Service Request
+# 2️⃣ CREATE SALES INVOICE FROM SERVICE REQUEST
 # ============================================================
 @frappe.whitelist()
 def create_sales_invoice_from_service_request(service_request):
-    """Create Sales Invoice only if SR is submitted and all items are completed."""
-    if not service_request:
-        frappe.throw("Service Request ID is required")
-
     sr = frappe.get_doc("Service Request", service_request)
 
-    # --- Validations ---
-    if sr.docstatus != 1:
-        frappe.throw("You can only create Sales Invoice after submitting the Service Request.")
+    # Prevent double creation
+    _check_existing_links(sr)
+
+    # Create SI
+    si = frappe.new_doc("Sales Invoice")
+    si.customer = sr.customer
+    si.company = sr.company
+    si.posting_date = nowdate()
+
+    # Mandatory fields
+    si.tax_category = sr.tax_category
+    si.selling_price_list = sr.price_list
+    si.price_list_currency = frappe.db.get_value("Price List", sr.price_list, "currency")
+    si.custom_service_charge_slab = sr.service_charge_slab
+    si.taxes_and_charges = sr.sales_taxes_and_charges_template
+
+    # Employee info
+    si.custom_employee = sr.dep_emp_name or ""
+    si.custom_employee_type = sr.employee_type or ""
+    si.custom_dep_no = sr.department_no or ""
+    si.custom_uid_no = sr.uid_no or ""
+
+    # NAMING SERIES
+    customer_group = frappe.db.get_value("Customer", sr.customer, "customer_group")
+    if customer_group == "VAT":
+        si.naming_series = "ACC-SINV-.YYYY.-"
+    elif customer_group == "NON VAT":
+        si.naming_series = "INV-.YYYY.-"
+    else:
+        si.naming_series = "INV-.YYYY.-"
+
+    # Add items
+    for row in sr.work_details:
+        item_name, stock_uom = frappe.db.get_value("Item", row.item_code, ["item_name", "stock_uom"])
+        si.append("items", {
+            "item_code": row.item_code,
+            "item_name": item_name,
+            "qty": row.qty,
+            "uom": stock_uom,
+            "rate": row.gov_charge,
+            "custom_service_charge": row.service_charge,
+            "custom_total_with_service_charge": row.amount,
+            "description": row.item_code,
+        })
+
+    # Add taxes WITH row_id FIX
+    si.set("taxes", [])
+
+    if sr.sales_taxes_and_charges_template:
+        template = frappe.get_doc("Sales Taxes and Charges Template", sr.sales_taxes_and_charges_template)
+
+        for idx, t in enumerate(template.taxes, start=1):
+            tax_row = {
+                "charge_type": t.charge_type,
+                "account_head": t.account_head,
+                "rate": t.rate,
+                "description": t.description,
+                "cost_center": t.cost_center,
+            }
+
+            # REQUIRED row_id assignment
+            if t.charge_type in ["On Previous Row Amount", "On Previous Row Total"]:
+                tax_row["row_id"] = idx - 1
+
+            si.append("taxes", tax_row)
+
+    # Insert
+    si.flags.ignore_permissions = True
+    si.flags.ignore_mandatory = True
+    si.insert(ignore_permissions=True)
+    si.save(ignore_permissions=True)
+
+    # Link back
+    frappe.db.set_value("Service Request", sr.name, "sales_invoice_ref", si.name)
+
+    return {"name": si.name}
+
+
+# ============================================================
+# HANDLE DELETE / CANCEL / AMEND: CLEAR OR UPDATE LINKS
+# ============================================================
+@frappe.whitelist()
+def clear_sr_links(doc, event=None):
+    """Clear links when Sales Order or Sales Invoice is deleted or cancelled."""
+    if doc.doctype == "Sales Order":
+        sr = frappe.db.get_value("Service Request", {"sales_order_ref": doc.name}, "name")
+        if sr:
+            frappe.db.set_value("Service Request", sr, "sales_order_ref", "")
+
+    if doc.doctype == "Sales Invoice":
+        sr = frappe.db.get_value("Service Request", {"sales_invoice_ref": doc.name}, "name")
+        if sr:
+            frappe.db.set_value("Service Request", sr, "sales_invoice_ref", "")
+
+
+@frappe.whitelist()
+def update_amended_link(doc, event=None):
+    """Update Service Request link when SO/SI is amended."""
+    if not doc.amended_from:
+        return
+
+    old = doc.amended_from
+    new = doc.name
+
+    if doc.doctype == "Sales Order":
+        sr = frappe.db.get_value("Service Request", {"sales_order_ref": old}, "name")
+        if sr:
+            frappe.db.set_value("Service Request", sr, "sales_order_ref", new)
+
+    if doc.doctype == "Sales Invoice":
+        sr = frappe.db.get_value("Service Request", {"sales_invoice_ref": old}, "name")
+        if sr:
+            frappe.db.set_value("Service Request", sr, "sales_invoice_ref", new)
+
+import frappe
+
+# ============================================================
+# VALIDATE SR CANCEL/DELETE
+# ============================================================
+@frappe.whitelist()
+def validate_sr_cancel_or_delete(sr_name):
+    """Ensure SR cannot be cancelled/deleted if linked SO/SI is still active."""
+    sr = frappe.get_doc("Service Request", sr_name)
 
     if sr.sales_order_ref:
-        frappe.throw("This Service Request already has a Sales Order. You can only create either a Sales Order or a Sales Invoice.")
+        so_status = frappe.db.get_value("Sales Order", sr.sales_order_ref, "docstatus")
+        if so_status and so_status != 2:  # 2 = Cancelled
+            frappe.throw(
+                f"❗ Cannot cancel/delete Service Request while Sales Order <b>{sr.sales_order_ref}</b> is active. Cancel it first."
+            )
 
-    incomplete = [row.item_code for row in sr.work_details if row.status != "Completed"]
-    if incomplete:
-        frappe.throw(f"All items must be Completed before creating Sales Invoice. Incomplete: {', '.join(incomplete)}")
+    if sr.sales_invoice_ref:
+        si_status = frappe.db.get_value("Sales Invoice", sr.sales_invoice_ref, "docstatus")
+        if si_status and si_status != 2:
+            frappe.throw(
+                f"❗ Cannot cancel/delete Service Request while Sales Invoice <b>{sr.sales_invoice_ref}</b> is active. Cancel it first."
+            )
 
-    # --- Detect customer field ---
-    customer = getattr(sr, "customer", None) or getattr(sr, "customer_name", None) or getattr(sr, "client", None)
-    if not customer:
-        frappe.throw("Customer not found in Service Request")
-
-    # --- Create Sales Invoice ---
-    si = frappe.new_doc("Sales Invoice")
-    si.customer = customer
-    si.company = getattr(sr, "company", None)
-    si.service_request = sr.name
-    si.posting_date = nowdate()
-    si.set("items", [])
-
-    # --- Add completed main items ---
-    if hasattr(sr, "work_details"):
-        for row in sr.work_details:
-            if row.status != "Completed":
-                continue
-
-            item_doc = frappe.get_doc("Item", row.item_code)
-            total_rate = (row.gov_charge or 0) + (row.service_charge or 0)
-            si.append("items", {
-                "item_code": row.item_code,
-                "item_name": item_doc.item_name,
-                "uom": item_doc.stock_uom,
-                "qty": row.qty,
-                "rate": total_rate,
-                "description": f"Main Item | Gov: {row.gov_charge or 0}, SRV: {row.service_charge or 0}",
-            })
-
-    # --- Add SRV items from 2nd tab ---
-    if hasattr(sr, "table_sgku"):
-        for row in sr.table_sgku:
-            item_doc = frappe.get_doc("Item", row.item_code)
-            si.append("items", {
-                "item_code": row.item_code,
-                "item_name": item_doc.item_name,
-                "uom": item_doc.stock_uom,
-                "qty": row.qty or 1,
-                "rate": row.service_charge or 0,
-                "description": f"SRV Item | Service Charge: {row.service_charge or 0}",
-            })
-
-    return si.as_dict()
-
+    return True
