@@ -14,6 +14,11 @@ fixtures = [
     "Custom Field"
 ]
 
+fixtures = [
+    {"doctype": "Number Card"}
+]
+
+
 doc_events = {
     "Sales Order": {
         "on_trash": "service_workorder.api.clear_sr_links",
