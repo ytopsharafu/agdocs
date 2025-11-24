@@ -33,21 +33,27 @@ doc_events = {
 
 doc_events = {
     "Service Request": {
-        # Block cancel/delete if linked SO/SI is still active
-        "before_cancel": "service_workorder.api.validate_sr_cancel_or_delete",
-        "before_trash": "service_workorder.api.validate_sr_cancel_or_delete",
+        # Use HOOK FUNCTION (NOT the whitelisted API)
+        "before_cancel": "service_workorder.api.hook_validate_sr_cancel_or_delete",
+        "before_trash": "service_workorder.api.hook_validate_sr_cancel_or_delete",
     },
+
     "Sales Order": {
         "on_trash": "service_workorder.api.clear_sr_links",
         "on_cancel": "service_workorder.api.clear_sr_links",
         "on_update_after_submit": "service_workorder.api.update_amended_link",
     },
+
     "Sales Invoice": {
         "on_trash": "service_workorder.api.clear_sr_links",
         "on_cancel": "service_workorder.api.clear_sr_links",
         "on_update_after_submit": "service_workorder.api.update_amended_link",
     }
 }
+override_doctype_class = {
+    "Service Request": "service_workorder.overrides.service_request_override.ServiceRequestOverride"
+}
+
 
 
 

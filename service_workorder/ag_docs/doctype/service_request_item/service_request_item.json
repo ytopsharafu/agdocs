@@ -9,6 +9,7 @@
   "item_code",
   "item_name",
   "qty",
+  "item_date",
   "gov_charge",
   "service_charge",
   "amount",
@@ -91,13 +92,18 @@
    "hidden": 1,
    "label": "Row ID",
    "read_only": 1
+  },
+  {
+   "fieldname": "item_date",
+   "fieldtype": "Date",
+   "label": "Date"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-14 11:32:02.606677",
+ "modified": "2025-11-20 15:13:20.391887",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Request Item",
