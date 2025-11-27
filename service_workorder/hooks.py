@@ -54,6 +54,10 @@ override_doctype_class = {
     "Service Request": "service_workorder.overrides.service_request_override.ServiceRequestOverride"
 }
 
+app_include_js = [
+    "public/js/service_request_report_extend.js"
+]
+
 
 
 

@@ -15,6 +15,7 @@
   "amount",
   "status",
   "payment_type",
+  "item_group",
   "row_id",
   "remarks"
  ],
@@ -97,13 +98,19 @@
    "fieldname": "item_date",
    "fieldtype": "Date",
    "label": "Date"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-20 15:13:20.391887",
+ "modified": "2025-11-26 14:33:10.181248",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Request Item",

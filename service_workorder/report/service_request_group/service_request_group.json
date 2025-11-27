@@ -1,0 +1,8 @@
+{
+  "doctype": "Report",
+  "is_standard": "Yes",
+  "name": "Service Request Group",
+  "ref_doctype": "Service Request",
+  "report_type": "Script Report",
+  "module": "Service Workorder"
+}

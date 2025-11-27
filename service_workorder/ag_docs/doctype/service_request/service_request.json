@@ -119,15 +119,6 @@
    "print_hide": 1
   },
   {
-   "fieldname": "status_summary_text",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "in_list_view": 1,
-   "label": "Status Summary",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
    "fieldname": "column_break_hekn",
    "fieldtype": "Column Break"
   },
@@ -264,13 +255,22 @@
    "label": "Sales Invoice Ref",
    "options": "Sales Invoice",
    "read_only": 1
+  },
+  {
+   "fieldname": "status_summary_text",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Status Summary",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-11-15 08:50:08.023801",
+ "modified": "2025-11-24 15:36:00.722556",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Service Request",
