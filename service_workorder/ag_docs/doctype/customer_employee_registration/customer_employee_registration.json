@@ -1,12 +1,13 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:full_name",
+ "autoname": "naming_series:",
  "creation": "2025-10-07 15:12:10.965162",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "section_break_x7nc",
+  "naming_series",
   "amended_from",
   "customer_name",
   "first_name",
@@ -73,9 +74,11 @@
    "bold": 1,
    "fieldname": "full_name",
    "fieldtype": "Data",
+   "in_filter": 1,
    "in_global_search": 1,
-   "label": "Full Name",
-   "unique": 1
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Full Name"
   },
   {
    "fieldname": "column_break_ltuj",
@@ -199,16 +202,23 @@
    "label": "Details",
    "max_height": "50px",
    "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "CEMP-.YYYY.-.####",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-26 09:39:29.118231",
+ "modified": "2025-11-28 15:24:07.155774",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Customer Employee Registration",
- "naming_rule": "By fieldname",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "ytopsharafu@gmail.com",
  "permissions": [
   {
@@ -226,7 +236,9 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "full_name"
 }
