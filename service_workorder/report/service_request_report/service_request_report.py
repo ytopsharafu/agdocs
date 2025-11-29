@@ -26,7 +26,7 @@ def execute(filters=None):
             sri.parent AS id,
             sr.date AS date,
             sr.customer AS customer,
-            sr.dep_emp_name AS employee,
+            COALESCE(ce.full_name, sr.dep_emp_name) AS employee,
             sr.department_no AS dep_no,
             sr.employee_type AS employee_type,
             sri.item_code AS item,
@@ -35,6 +35,7 @@ def execute(filters=None):
             sri.amount AS amount
         FROM `tabService Request Item` sri
         LEFT JOIN `tabService Request` sr ON sr.name = sri.parent
+        LEFT JOIN `tabCustomer Employee Registration` ce ON ce.name = sr.dep_emp_name
         ORDER BY sr.date DESC, sri.parent
     """, as_dict=True)
 
