@@ -4769,7 +4769,7 @@
   "name": "Print Format-print_designer_template_app",
   "no_copy": 0,
   "non_negative": 0,
-  "options": null,
+  "options": "print_designer",
   "permlevel": 0,
   "placeholder": null,
   "precision": "",
