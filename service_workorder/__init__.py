@@ -1,6 +1,6 @@
 import sys
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 # Alias the package as `service_workorder.service_workorder` so frappe's module loader works
 _module = sys.modules[__name__]

@@ -49,6 +49,12 @@
       "options": "Item Group"
     },
     {
+      "fieldname": "owner",
+      "label": "Created By",
+      "fieldtype": "Link",
+      "options": "User"
+    },
+    {
       "fieldname": "additional_columns",
       "label": "Additional Columns",
       "fieldtype": "MultiSelectList"

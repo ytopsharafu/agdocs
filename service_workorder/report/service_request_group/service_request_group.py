@@ -84,6 +84,10 @@ def execute(filters=None):
         conditions.append("it.item_group = %(item_group)s")
         values["item_group"] = filters.item_group
 
+    if filters.get("owner"):
+        conditions.append("sr.owner = %(owner)s")
+        values["owner"] = filters.owner
+
     where_clause = " AND ".join(["1=1"] + conditions)
 
     # Limit & pagination
@@ -148,6 +152,13 @@ def execute(filters=None):
             "options": "Item Group",
             "width": 150,
         },
+        {
+            "label": "Created By",
+            "fieldname": "owner",
+            "fieldtype": "Link",
+            "options": "User",
+            "width": 180,
+        },
         {"label": "Gov Charge", "fieldname": "gov_charge", "fieldtype": "Currency", "width": 120},
         {"label": "Service Charge", "fieldname": "service_charge", "fieldtype": "Currency", "width": 130},
         {"label": "Amount", "fieldname": "amount", "fieldtype": "Currency", "width": 120},
@@ -190,6 +201,7 @@ def execute(filters=None):
         "sr.employee_type AS employee_type",
         "sri.item_code AS item_name",
         "it.item_group AS item_group",
+        "sr.owner",
         "sri.gov_charge",
         "sri.service_charge",
         "sri.amount",
@@ -264,6 +276,7 @@ def execute(filters=None):
             "employee_type": "",
             "item_name": "",
             "item_group": "",
+            "owner": "",
             "gov_charge": totals_data.get("gov_total") or 0,
             "service_charge": totals_data.get("service_total") or 0,
             "amount": totals_data.get("amount_total") or 0,

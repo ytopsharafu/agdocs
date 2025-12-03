@@ -71,6 +71,12 @@ frappe.query_reports["Service Request Group"] = {
             "options": "Item Group"
         },
         {
+            "fieldname": "owner",
+            "label": "Created By",
+            "fieldtype": "Link",
+            "options": "User"
+        },
+        {
             "fieldname": "additional_columns",
             "label": "Additional Columns",
             "fieldtype": "MultiSelectList",
@@ -133,6 +139,7 @@ frappe.query_reports["Service Request Group"] = {
             service_request_id: "",
             item: "",
             item_group: "",
+            owner: "",
             additional_columns: [],
             from_date: "",
             to_date: "",
@@ -168,6 +175,7 @@ frappe.query_reports["Service Request Group"] = {
         employee: 300,
         item: 350,
         item_group: 200,
+        owner: 200,
         additional_columns: 280,
         limit_page: 140
     };

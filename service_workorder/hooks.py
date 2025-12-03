@@ -19,36 +19,21 @@ fixtures = [
 
 
 doc_events = {
-    "Sales Order": {
-        "on_trash": "service_workorder.api.clear_sr_links",
-        "on_cancel": "service_workorder.api.clear_sr_links",
-        "on_update_after_submit": "service_workorder.api.update_amended_link"
-    },
-    "Sales Invoice": {
-        "on_trash": "service_workorder.api.clear_sr_links",
-        "on_cancel": "service_workorder.api.clear_sr_links",
-        "on_update_after_submit": "service_workorder.api.update_amended_link"
-    }
-}
-
-doc_events = {
     "Service Request": {
         # Use HOOK FUNCTION (NOT the whitelisted API)
         "before_cancel": "service_workorder.api.hook_validate_sr_cancel_or_delete",
         "before_trash": "service_workorder.api.hook_validate_sr_cancel_or_delete",
     },
-
     "Sales Order": {
         "on_trash": "service_workorder.api.clear_sr_links",
         "on_cancel": "service_workorder.api.clear_sr_links",
         "on_update_after_submit": "service_workorder.api.update_amended_link",
     },
-
     "Sales Invoice": {
         "on_trash": "service_workorder.api.clear_sr_links",
         "on_cancel": "service_workorder.api.clear_sr_links",
         "on_update_after_submit": "service_workorder.api.update_amended_link",
-    }
+    },
 }
 override_doctype_class = {
     "Service Request": "service_workorder.overrides.service_request_override.ServiceRequestOverride"
@@ -294,4 +279,3 @@ override_doctype_class = {
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
-

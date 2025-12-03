@@ -148,7 +148,8 @@ def create_sales_order_from_service_request(service_request):
 
     frappe.db.set_value("Service Request", sr.name, "sales_order_ref", so.name)
 
-    return {"name": so.name}
+    # Return the synced document so client scripts can route without extra fetches
+    return so.as_dict()
 
 
 # ============================================================
@@ -224,7 +225,7 @@ def create_sales_invoice_from_service_request(service_request):
 
     frappe.db.set_value("Service Request", sr.name, "sales_invoice_ref", si.name)
 
-    return {"name": si.name}
+    return si.as_dict()
 
 
 # ============================================================
