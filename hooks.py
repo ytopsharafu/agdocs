@@ -1,7 +1,11 @@
 app_include_css = [
-    "/assets/service_workorder/css/ag_themes.css"
+    "/assets/service_workorder/css/icomoon/style.css"
 ]
 
-web_include_css = [
-    "/assets/service_workorder/css/ag_themes.css"
+fixtures = [
+    {
+        "doctype": "Client Script",
+        "filters": [["module", "=", "AG Docs"]],
+    },
+    {"doctype": "Custom HTML Block"},
 ]
