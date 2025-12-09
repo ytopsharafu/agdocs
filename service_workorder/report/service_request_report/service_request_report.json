@@ -1,38 +1,63 @@
 {
-  "doctype": "Report",
-  "name": "Service Request Report",
-  "ref_doctype": "Service Request",
-  "report_type": "Script Report",
-  "is_standard": "Yes",
-  "module": "Service Workorder",
-  "filters": [
-    {
-      "fieldname": "id",
-      "fieldtype": "Link",
-      "label": "Service Request",
-      "options": "Service Request"
-    },
-    {
-      "fieldname": "from_date",
-      "fieldtype": "Date",
-      "label": "From Date"
-    },
-    {
-      "fieldname": "to_date",
-      "fieldtype": "Date",
-      "label": "To Date"
-    },
-    {
-      "fieldname": "customer",
-      "fieldtype": "Link",
-      "label": "Customer",
-      "options": "Customer"
-    },
-    {
-      "fieldname": "employee",
-      "fieldtype": "Link",
-      "label": "Employee / Dependent",
-      "options": "Customer Employee Registration"
-    }
-  ]
+ "add_total_row": 1,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-12-04 13:08:42.070892",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "id",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "mandatory": 0,
+   "options": "Service Request",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "mandatory": 0,
+   "options": "Customer",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee / Dependent",
+   "mandatory": 0,
+   "options": "Customer Employee Registration",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2025-12-08 19:18:51.325245",
+ "modified_by": "Administrator",
+ "module": "Service Workorder",
+ "name": "Service Request Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Service Request",
+ "report_name": "Service Request Report",
+ "report_type": "Script Report",
+ "roles": [],
+ "timeout": 0
 }

@@ -1,0 +1,115 @@
+@font-face {
+  font-family: 'icomoon';
+  src: url('/assets/service_workorder/css/icomoon/icomoon.eot?otf202');
+  src: url('/assets/service_workorder/css/icomoon/icomoon.eot?otf202#iefix') format('embedded-opentype'),
+       url('/assets/service_workorder/css/icomoon/icomoon.woff?otf202') format('woff'),
+       url('/assets/service_workorder/css/icomoon/icomoon.ttf?otf202') format('truetype'),
+       url('/assets/service_workorder/css/icomoon/icomoon.svg?otf202#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-general-ledger:before {
+  content: "\e915";
+  color: #1284e4;
+}
+.icon-bank-reconcile:before {
+  content: "\e900";
+  color: #1284e4;
+}
+.icon-customer:before {
+  content: "\e901";
+  color: #1284e4;
+}
+.icon-delivery-note:before {
+  content: "\e902";
+  color: #1284e4;
+}
+.icon-employee-reg:before {
+  content: "\e903";
+  color: #1284e4;
+}
+.icon-item:before {
+  content: "\e904";
+  color: #1284e4;
+}
+.icon-item-group:before {
+  content: "\e905";
+  color: #1284e4;
+}
+.icon-journal-entry:before {
+  content: "\e906";
+  color: #1284e4;
+}
+.icon-payment-entry:before {
+  content: "\e907";
+  color: #1284e4;
+}
+.icon-payment-reconcile:before {
+  content: "\e908";
+  color: #1284e4;
+}
+.icon-purchase-inv:before {
+  content: "\e909";
+  color: #1284e4;
+}
+.icon-purchase-ord:before {
+  content: "\e90a";
+  color: #1284e4;
+}
+.icon-purchase-qt:before {
+  content: "\e90b";
+  color: #1284e4;
+}
+.icon-receipt-note:before {
+  content: "\e90c";
+  color: #1284e4;
+}
+.icon-report:before {
+  content: "\e90d";
+  color: #1284e4;
+}
+.icon-sales-inv:before {
+  content: "\e90e";
+  color: #1284e4;
+}
+.icon-sales-ord:before {
+  content: "\e90f";
+  color: #1284e4;
+}
+.icon-sales-qt:before {
+  content: "\e910";
+  color: #1284e4;
+}
+.icon-service-charge-slab:before {
+  content: "\e911";
+  color: #1284e4;
+}
+.icon-service-request:before {
+  content: "\e912";
+  color: #1284e4;
+}
+.icon-servie-charge-lnk:before {
+  content: "\e913";
+  color: #1284e4;
+}
+.icon-supplier:before {
+  content: "\e914";
+  color: #1284e4;
+}

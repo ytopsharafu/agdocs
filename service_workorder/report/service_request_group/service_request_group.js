@@ -7,6 +7,38 @@ const SERVICE_REQUEST_OPTIONAL_COLUMNS = [
     { value: "sales_taxes_and_charges_template", label: "Tax Template" }
 ];
 
+const SERVICE_REQUEST_STATUS_OPTIONS = [
+    { value: "Draft", label: "Draft" },
+    { value: "Submitted", label: "Submitted" },
+    { value: "Cancelled", label: "Cancelled" }
+];
+
+const SERVICE_REQUEST_SORT_OPTIONS = [
+    { value: "", label: "Default (Date Desc)" },
+    { value: "date", label: "Date" },
+    { value: "customer", label: "Customer" },
+    { value: "employee", label: "Employee Name" },
+    { value: "dep_no", label: "Dep No" },
+    { value: "employee_type", label: "Emp Type" },
+    { value: "item", label: "Item" },
+    { value: "item_group", label: "Item Group" },
+    { value: "owner", label: "Created By" },
+    { value: "gov_charge", label: "Gov Charge" },
+    { value: "service_charge", label: "Service Charge" },
+    { value: "amount", label: "Amount" }
+];
+
+const SERVICE_REQUEST_DUPLICATE_FIELDS = [
+    "id",
+    "status",
+    "date",
+    "customer",
+    "full_name",
+    "dep_no",
+    "employee_type",
+    "owner"
+];
+
 frappe.query_reports["Service Request Group"] = {
     "filters": [
          {
@@ -18,6 +50,20 @@ frappe.query_reports["Service Request Group"] = {
             "fieldname": "to_date",
             "label": "To Date",
             "fieldtype": "Date"
+        },
+        {
+            "fieldname": "status",
+            "label": "Status",
+            "fieldtype": "MultiSelectList",
+            "get_data": function(txt) {
+                const search = (txt || "").toLowerCase();
+                return SERVICE_REQUEST_STATUS_OPTIONS
+                    .filter(option => !search || option.label.toLowerCase().includes(search))
+                    .map(option => ({ value: option.value, description: option.label }));
+            },
+            "on_change": function(report) {
+                report.refresh();
+            }
         },
         {
             "fieldname": "service_request_id",
@@ -91,6 +137,29 @@ frappe.query_reports["Service Request Group"] = {
             }
         },
         {
+            "fieldname": "sort_by",
+            "label": "Sort Column",
+            "fieldtype": "Select",
+            "options": SERVICE_REQUEST_SORT_OPTIONS,
+            "default": "",
+            "on_change": function(report) {
+                report.refresh();
+            }
+        },
+        {
+            "fieldname": "sort_order",
+            "label": "Sort Order",
+            "fieldtype": "Select",
+            "options": [
+                { label: "Descending", value: "DESC" },
+                { label: "Ascending", value: "ASC" }
+            ],
+            "default": "DESC",
+            "on_change": function(report) {
+                report.refresh();
+            }
+        },
+        {
             "fieldname": "limit_page",
             "label": "Show Entries",
             "fieldtype": "Select",
@@ -122,11 +191,23 @@ frappe.query_reports["Service Request Group"] = {
     ],
 
     formatter(value, row, column, data, default_formatter) {
-        value = default_formatter(value, row, column, data);
-        if (data && data.is_total_row) {
-            return `<span class="service-request-total">${value || ""}</span>`;
+        const is_duplicate = row && row._is_duplicate;
+        const should_hide = is_duplicate && SERVICE_REQUEST_DUPLICATE_FIELDS.includes(column.fieldname);
+        if (should_hide) {
+            return "";
         }
-        return value;
+
+        let formatted_value = default_formatter(value, row, column, data);
+
+        if (column.fieldname === "id" && formatted_value && !(data && data.is_total_row)) {
+            formatted_value = `<span class="font-weight-bold">${formatted_value}</span>`;
+        }
+
+        if (data && data.is_total_row) {
+            return `<span class="service-request-total">${formatted_value || ""}</span>`;
+        }
+
+        return formatted_value;
     },
 
     onload: function(report) {
@@ -136,11 +217,14 @@ frappe.query_reports["Service Request Group"] = {
         frappe.query_report.set_filter_value({
             customer: "",
             employee: "",
+            status: [],
             service_request_id: "",
             item: "",
             item_group: "",
             owner: "",
             additional_columns: [],
+            sort_by: "",
+            sort_order: "DESC",
             from_date: "",
             to_date: "",
             limit_page: "500",
@@ -170,6 +254,7 @@ frappe.query_reports["Service Request Group"] = {
     const filterWidths = {
         from_date: 150,
         to_date: 150,
+        status: 200,
         service_request_id: 250,
         customer: 350,
         employee: 300,
@@ -177,6 +262,8 @@ frappe.query_reports["Service Request Group"] = {
         item_group: 200,
         owner: 200,
         additional_columns: 280,
+        sort_by: 200,
+        sort_order: 150,
         limit_page: 140
     };
 

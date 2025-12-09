@@ -40,6 +40,11 @@ override_doctype_class = {
 }
 
 
+app_include_css = [
+    "/assets/service_workorder/css/icomoon/style.css"
+]
+
+
 
 
 

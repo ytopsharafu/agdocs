@@ -40,6 +40,20 @@ OPTIONAL_COLUMNS = {
     },
 }
 
+SORTABLE_FIELDS = {
+    "date": "sr.date",
+    "customer": "sr.customer",
+    "employee": "ce.full_name",
+    "dep_no": "sr.department_no",
+    "employee_type": "sr.employee_type",
+    "item": "sri.item_code",
+    "item_group": "it.item_group",
+    "owner": "sr.owner",
+    "gov_charge": "sri.gov_charge",
+    "service_charge": "sri.service_charge",
+    "amount": "sri.amount",
+}
+
 def execute(filters=None):
 
     # -------------------------
@@ -50,6 +64,21 @@ def execute(filters=None):
 
     conditions = []
     values = {}
+
+    def parse_multi_select_values(value):
+        if not value:
+            return []
+        if isinstance(value, (list, tuple)):
+            return list(value)
+        if isinstance(value, str):
+            try:
+                parsed = frappe.parse_json(value)
+                if isinstance(parsed, list):
+                    return parsed
+            except Exception:
+                pass
+            return [v.strip() for v in value.split(",") if v.strip()]
+        return [value]
 
     # Date Range Filters
     if filters.get("from_date"):
@@ -88,8 +117,6 @@ def execute(filters=None):
         conditions.append("sr.owner = %(owner)s")
         values["owner"] = filters.owner
 
-    where_clause = " AND ".join(["1=1"] + conditions)
-
     # Limit & pagination
     limit_value = cint(filters.get("limit_page") or 500)
     if limit_value <= 0:
@@ -101,33 +128,44 @@ def execute(filters=None):
 
     offset_value = (page_value - 1) * limit_value
 
-    def parse_additional_columns(value):
-        if not value:
-            return []
-        if isinstance(value, list):
-            return value
-        if isinstance(value, str):
-            try:
-                parsed = frappe.parse_json(value)
-                if isinstance(parsed, list):
-                    return parsed
-            except Exception:
-                pass
-            return [v.strip() for v in value.split(",") if v.strip()]
-        return [value]
-
     selected_additional = [
-        col for col in parse_additional_columns(filters.get("additional_columns"))
+        col for col in parse_multi_select_values(filters.get("additional_columns"))
         if col in OPTIONAL_COLUMNS
     ]
+
+    status_filter = parse_multi_select_values(filters.get("status"))
+    if status_filter:
+        status_map = {"Draft": 0, "Submitted": 1, "Cancelled": 2}
+        docstatus_values = []
+        for status in status_filter:
+            mapped = status_map.get(status)
+            if mapped is None:
+                try:
+                    mapped = cint(status)
+                except Exception:
+                    continue
+            docstatus_values.append(mapped)
+
+        if docstatus_values:
+            conditions.append("sr.docstatus IN %(docstatus_values)s")
+            values["docstatus_values"] = tuple(docstatus_values)
+
+    where_clause = " AND ".join(["1=1"] + conditions)
 
     # -------------------------
     # Column Definitions
     # -------------------------
     columns = [
-        {"label": "ID", "fieldname": "id", "fieldtype": "Data", "width": 200},
+        {
+            "label": "ID",
+            "fieldname": "id",
+            "fieldtype": "Link",
+            "options": "Service Request",
+            "width": 200,
+        },
         {"label": "Status", "fieldname": "status", "fieldtype": "Data", "width": 100},
         {"label": "Date", "fieldname": "date", "fieldtype": "Date", "width": 110},
+        {"label": "Item Date", "fieldname": "item_date", "fieldtype": "Date", "width": 110},
         {
             "label": "Customer Name",
             "fieldname": "customer",
@@ -164,7 +202,12 @@ def execute(filters=None):
         {"label": "Amount", "fieldname": "amount", "fieldtype": "Currency", "width": 120},
     ]
 
+    base_fieldnames = {col["fieldname"] for col in columns}
+    query_additional = []
+
     for key in selected_additional:
+        if key in base_fieldnames:
+            continue
         col = OPTIONAL_COLUMNS.get(key)
         if not col:
             continue
@@ -174,6 +217,7 @@ def execute(filters=None):
             "fieldtype": col.get("fieldtype", "Data"),
             "width": col.get("width", 120),
         })
+        query_additional.append(key)
 
     base_query = f"""
     FROM 
@@ -195,6 +239,7 @@ def execute(filters=None):
         "sri.parent AS id",
         "CASE WHEN sr.docstatus = 0 THEN 'Draft'\n            WHEN sr.docstatus = 1 THEN 'Submitted'\n            WHEN sr.docstatus = 2 THEN 'Cancelled'\n            ELSE '' END AS status",
         "sr.date",
+        "sri.item_date AS item_date",
         "sr.customer",
         "ce.full_name AS full_name",
         "sr.department_no AS dep_no",
@@ -207,11 +252,21 @@ def execute(filters=None):
         "sri.amount",
     ]
 
-    for key in selected_additional:
+    for key in query_additional:
         expression = OPTIONAL_COLUMNS[key]["expression"]
         select_fields.append(f"{expression} AS `{key}`")
 
     select_clause = ",\n        ".join(select_fields)
+
+    order_field_key = filters.get("sort_by")
+    order_direction = "ASC" if (filters.get("sort_order") or "").upper() == "ASC" else "DESC"
+
+    default_order = "sr.date DESC, sr.name DESC, sri.idx"
+    if order_field_key in SORTABLE_FIELDS:
+        primary_sort = SORTABLE_FIELDS[order_field_key]
+        order_clause = f"{primary_sort} {order_direction}, sr.name DESC, sri.idx"
+    else:
+        order_clause = default_order
 
     sql = f"""
     SELECT 
@@ -220,7 +275,7 @@ def execute(filters=None):
     {base_query}
 
     ORDER BY 
-        sr.date DESC, sr.name DESC, sri.idx
+        {order_clause}
 
     LIMIT {limit_value} OFFSET {offset_value}
     """
@@ -235,23 +290,8 @@ def execute(filters=None):
 
     for row in raw:
         current_id = row["id"]
-
-        # Convert ID to clickable link
-        if current_id:
-            row["id"] = f"<b><a href='/app/service-request/{current_id}'>{current_id}</a></b>"
-
-        # Hide repeated parent information for grouped rows
-        if current_id == last_id:
-            row["id"] = ""
-            row["status"] = ""
-            row["date"] = ""
-            row["customer"] = ""
-            row["full_name"] = ""
-            row["dep_no"] = ""
-            row["employee_type"] = ""
-        else:
-            last_id = current_id
-
+        row["_is_duplicate"] = current_id == last_id
+        last_id = current_id
         data.append(row)
 
     totals_sql = f"""
@@ -276,6 +316,7 @@ def execute(filters=None):
             "employee_type": "",
             "item_name": "",
             "item_group": "",
+            "item_date": "",
             "owner": "",
             "gov_charge": totals_data.get("gov_total") or 0,
             "service_charge": totals_data.get("service_total") or 0,
@@ -286,6 +327,7 @@ def execute(filters=None):
         for key in selected_additional:
             total_row[key] = ""
 
+        total_row["_is_duplicate"] = 0
         data.append(total_row)
 
     return columns, data

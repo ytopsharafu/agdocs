@@ -1,0 +1,141 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 0,
+ "columns": [],
+ "creation": "2025-12-04 15:27:25.259123",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "mandatory": 0,
+   "options": "Company",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "label": "Account",
+   "mandatory": 0,
+   "options": "Account",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "default": "Last 30 Days",
+   "fieldname": "date_range",
+   "fieldtype": "Select",
+   "label": "Date Range",
+   "mandatory": 0,
+   "options": "Custom\nLast 30 Days\nThis Month\nLast Month\nThis Year\nLast Year",
+   "wildcard_filter": 0
+  },
+  {
+   "default": "0",
+   "fieldname": "include_future_entries",
+   "fieldtype": "Check",
+   "label": "Include Future Entries",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment",
+   "mandatory": 0,
+   "options": "Mode of Payment",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "voucher_type",
+   "fieldtype": "Link",
+   "label": "Voucher Type",
+   "mandatory": 0,
+   "options": "DocType",
+   "wildcard_filter": 0
+  },
+  {
+   "default": "0",
+   "fieldname": "show_remark_in_print",
+   "fieldtype": "Check",
+   "label": "Show Remarks in Print",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "label": "Party Type",
+   "mandatory": 0,
+   "options": "Party Type",
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "mandatory": 0,
+   "options": "party_type",
+   "wildcard_filter": 0
+  },
+  {
+   "default": "1",
+   "fieldname": "include_opening",
+   "fieldtype": "Check",
+   "label": "Include Opening Balance",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "fieldname": "show_bt_id",
+   "fieldtype": "Check",
+   "label": "Show Bank Transaction ID",
+   "mandatory": 0,
+   "wildcard_filter": 0
+  },
+  {
+   "default": "Submitted",
+   "fieldname": "docstatus",
+   "fieldtype": "Select",
+   "label": "Docstatus",
+   "mandatory": 0,
+   "options": "\nDraft\nSubmitted\nCancelled",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2025-12-04 15:44:31.517768",
+ "modified_by": "Administrator",
+ "module": "Service Workorder",
+ "name": "Bank Statement",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "GL Entry",
+ "reference_report": "New",
+ "report_name": "Bank Statement",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "All"
+  }
+ ],
+ "timeout": 0
+}

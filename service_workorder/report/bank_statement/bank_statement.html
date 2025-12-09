@@ -1,0 +1,89 @@
+<h2 class="text-center">{%= __("Bank Statement") %}</h2>
+<h4 class="text-center">
+	{%= filters.company || "" %}
+	{% if (filters.account) { %}
+		- {%= filters.account %}
+	{% } %}
+</h4>
+<p class="text-center text-muted">
+	{%= __("From {0} to {1}", [
+		frappe.datetime.str_to_user(filters.from_date || ""),
+		frappe.datetime.str_to_user(filters.to_date || ""),
+	]) %}
+</p>
+<hr>
+{% var show_remark = cint(filters.show_remark_in_print || 0); %}
+{% var closing_label = "Closing Balance"; %}
+{% var summary_terms = [
+	"Bank Statement balance as per General Ledger",
+	"Outstanding Cheques and Deposits to clear",
+	"Cheques and Deposits incorrectly cleared",
+	"Calculated Bank Statement balance",
+]; %}
+{% var label_colspan = show_remark ? 7 : 6; %}
+{% var closing_row = null; %}
+
+<table class="table table-bordered table-condensed">
+	<thead>
+		<tr>
+			<th style="width: 12%">{%= __("Posting Date") %}</th>
+			<th style="width: 12%">{%= __("Voucher Type") %}</th>
+			<th style="width: 16%">{%= __("Voucher No") %}</th>
+			<th style="width: 14%">{%= __("Against Account") %}</th>
+		{% if (show_remark) { %}
+		<th style="width: 16%">{%= __("Remark") %}</th>
+		{% } %}
+			<th style="width: 10%; text-align: right;">{%= __("Debit") %}</th>
+			<th style="width: 10%; text-align: right;">{%= __("Credit") %}</th>
+		<th style="width: 10%; text-align: right;">{%= __("Balance") %}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for (var i = 0, l = data.length; i < l; i++) { %}
+		{% var remark_text = data[i].remark || ""; %}
+		{% if (remark_text === closing_label) { closing_row = data[i]; continue; } %}
+		{% if (summary_terms.indexOf(remark_text) !== -1) { continue; } %}
+			<tr>
+				<td>{%= data[i].posting_date ? frappe.datetime.str_to_user(data[i].posting_date) : "" %}</td>
+				<td>{%= data[i].voucher_type || "" %}</td>
+				<td>{%= data[i].voucher_no || "" %}</td>
+				<td>{%= data[i].against_account || "" %}</td>
+		{% if (show_remark) { %}
+			<td>
+				{%= data[i].remark || "" %}
+				{% if (data[i].cheque_no) { %}
+					<br>{%= __("Cheque") %}: {%= data[i].cheque_no %}
+				{% } %}
+				{% if (data[i].mode_of_payment) { %}
+					<br>{%= __("Mode") %}: {%= data[i].mode_of_payment %}
+				{% } %}
+				{% if (data[i].reconciled_status) { %}
+					<br>{%= __("Status") %}: {%= data[i].reconciled_status %}
+				{% } %}
+			</td>
+			{% } %}
+				<td style="text-align: right">{%= data[i].debit ? format_currency(data[i].debit) : "" %}</td>
+				<td style="text-align: right">{%= data[i].credit ? format_currency(data[i].credit) : "" %}</td>
+		<td style="text-align: right;">
+				{%= data[i].running_balance ? format_currency(data[i].running_balance) : "" %}
+			</td>
+			</tr>
+		{% } %}
+	</tbody>
+	{% if (closing_row) { %}
+	<tfoot>
+		<tr>
+			<td colspan="{%= label_colspan %}" style="text-align: right; font-weight: bold;">
+				{%= closing_label %}
+			</td>
+			<td style="text-align: right; font-weight: bold;">
+				{%= closing_row.running_balance ? format_currency(closing_row.running_balance) : "" %}
+			</td>
+		</tr>
+	</tfoot>
+	{% } %}
+</table>
+
+<p class="text-right text-muted">
+	{%= __("Printed on {0}", [frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string())]) %}
+</p>
