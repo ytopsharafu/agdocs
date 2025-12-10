@@ -34,6 +34,9 @@ doc_events = {
         "on_cancel": "service_workorder.api.clear_sr_links",
         "on_update_after_submit": "service_workorder.api.update_amended_link",
     },
+    "Workspace": {
+        "before_validate": "service_workorder.workspace_hooks.remove_broken_custom_blocks",
+    },
 }
 override_doctype_class = {
     "Service Request": "service_workorder.overrides.service_request_override.ServiceRequestOverride"

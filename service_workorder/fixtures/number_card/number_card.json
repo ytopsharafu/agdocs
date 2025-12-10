@@ -22,6 +22,7 @@
   "report_field": null,
   "report_function": "Sum",
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -49,6 +50,7 @@
   "report_field": null,
   "report_function": "Sum",
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -76,6 +78,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Weekly",
   "type": null
@@ -103,6 +106,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Weekly",
   "type": null
@@ -130,6 +134,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Weekly",
   "type": null
@@ -157,6 +162,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Weekly",
   "type": null
@@ -184,6 +190,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -211,6 +218,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -238,6 +246,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -265,6 +274,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -292,6 +302,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -319,6 +330,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -346,6 +358,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -373,6 +386,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -400,6 +414,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Weekly",
   "type": "Document Type"
@@ -427,6 +442,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Weekly",
   "type": "Document Type"
@@ -454,6 +470,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -481,6 +498,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -508,6 +526,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Weekly",
   "type": "Document Type"
@@ -535,6 +554,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Weekly",
   "type": "Document Type"
@@ -562,6 +582,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -589,6 +610,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -616,6 +638,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -643,6 +666,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -670,6 +694,7 @@
   "report_field": null,
   "report_function": "Sum",
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -697,6 +722,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -724,6 +750,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -751,6 +778,7 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
@@ -778,6 +806,7 @@
   "report_field": null,
   "report_function": "Sum",
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -805,6 +834,7 @@
   "report_field": null,
   "report_function": "Sum",
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -832,6 +862,7 @@
   "report_field": null,
   "report_function": "Sum",
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Document Type"
@@ -859,6 +890,7 @@
   "report_field": "balance",
   "report_function": "Sum",
   "report_name": "General Ledger",
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Daily",
   "type": "Report"
@@ -886,8 +918,65 @@
   "report_field": null,
   "report_function": null,
   "report_name": null,
+  "show_full_number": 0,
   "show_percentage_stats": 1,
   "stats_time_interval": "Monthly",
   "type": "Document Type"
+ },
+ {
+  "aggregate_function_based_on": "debit",
+  "background_color": null,
+  "color": "#CB2929",
+  "currency": "AED",
+  "docstatus": 0,
+  "doctype": "Number Card",
+  "document_type": "GL Entry",
+  "dynamic_filters_json": "{}",
+  "filters_config": null,
+  "filters_json": "{\"account\":\"RAK - CREDIT CARD - UFT\",\"from_date\":\"2025-01-01\",\"to_date\":\"2025-12-09\"}",
+  "function": "Sum",
+  "is_public": 0,
+  "is_standard": 0,
+  "label": "RAK BANK Credit Card",
+  "method": null,
+  "modified": "2025-12-09 15:22:48.455163",
+  "module": null,
+  "name": "RAK BANK Credit Card",
+  "parent_document_type": "",
+  "report_field": "amount",
+  "report_function": "Sum",
+  "report_name": "Bank Clearance Summary",
+  "show_full_number": 1,
+  "show_percentage_stats": 1,
+  "stats_time_interval": "Daily",
+  "type": "Report"
+ },
+ {
+  "aggregate_function_based_on": "debit",
+  "background_color": null,
+  "color": "#4463F0",
+  "currency": "AED",
+  "docstatus": 0,
+  "doctype": "Number Card",
+  "document_type": "GL Entry",
+  "dynamic_filters_json": "{}",
+  "filters_config": null,
+  "filters_json": "{\"account\":\"RAK BANK - UFT\",\"from_date\":\"2025-01-01\",\"to_date\":\"2025-12-09\"}",
+  "function": "Sum",
+  "is_public": 0,
+  "is_standard": 0,
+  "label": "RAK BANK",
+  "method": null,
+  "modified": "2025-12-09 14:49:25.502214",
+  "module": null,
+  "name": "RAK BANK",
+  "parent_document_type": "",
+  "report_field": "amount",
+  "report_function": "Sum",
+  "report_name": "Bank Clearance Summary",
+  "show_full_number": 1,
+  "show_percentage_stats": 1,
+  "stats_time_interval": "Daily",
+  "type": "Report"
  }
 ]
