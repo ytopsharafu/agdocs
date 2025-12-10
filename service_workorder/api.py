@@ -1,4 +1,5 @@
 import frappe
+from frappe.contacts.doctype.contact.contact import get_default_contact
 from frappe.utils import nowdate, add_days
 
 
@@ -31,6 +32,83 @@ def load_sales_taxes(template_name=None, company=None):
         }
         for tax in doc.taxes
     ]
+
+
+# ============================================================
+# Customer contact info helper for client scripts
+# ============================================================
+@frappe.whitelist()
+def get_customer_contact_info(customer):
+    if not customer:
+        return {}
+
+    fields = ["customer_name", "email_id"]
+    for column in ("mobile_no", "phone"):
+        if frappe.db.has_column("Customer", column):
+            fields.append(column)
+
+    info = frappe.db.get_value("Customer", customer, fields, as_dict=True)
+    if not info:
+        return {}
+
+    result = {
+        "customer": customer,
+        "customer_name": info.get("customer_name"),
+        "customer_email": info.get("email_id"),
+    }
+
+    for column in ("mobile_no", "phone"):
+        if info.get(column):
+            result["mobile"] = info.get(column)
+            break
+
+    contact_name = get_default_contact("Customer", customer)
+    if contact_name:
+        contact = frappe.db.get_value(
+            "Contact",
+            contact_name,
+            ["name", "email_id", "mobile_no", "phone"],
+            as_dict=True,
+        )
+        if contact:
+            result["primary_contact"] = contact_name
+            result["contact_email"] = contact.get("email_id")
+            contact_mobile = contact.get("mobile_no") or contact.get("phone")
+            if contact_mobile:
+                result["contact_mobile"] = contact_mobile
+                if not result.get("mobile"):
+                    result["mobile"] = contact_mobile
+
+            if not result.get("customer_email") and contact.get("email_id"):
+                result["customer_email"] = contact.get("email_id")
+
+    return result
+
+
+def ensure_sales_order_delivery_date(doc, _method=None):
+    """Fill delivery date automatically so users aren't blocked by mandatory field."""
+    if getattr(doc, "delivery_date", None):
+        return
+
+    doc.delivery_date = doc.transaction_date or nowdate()
+    for row in getattr(doc, "items", []) or []:
+        ensure_sales_order_item_delivery_date(row, doc)
+
+
+def ensure_sales_order_item_delivery_date(row, parent_doc=None):
+    """Fill delivery date on the child row if missing."""
+    reference_date = None
+    if parent_doc:
+        reference_date = getattr(parent_doc, "delivery_date", None) or getattr(parent_doc, "transaction_date", None)
+
+    if reference_date is None:
+        reference_date = nowdate()
+
+    if getattr(row, "delivery_date", None):
+        return
+
+    row.delivery_date = reference_date
+
 
 # ============================================================
 # Get service charge for an item from a slab

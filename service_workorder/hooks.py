@@ -14,7 +14,13 @@ fixtures = [
         ]
     },
     "Custom Field",
-    {"doctype": "Number Card"}
+    {"doctype": "Number Card"},
+    {
+        "doctype": "Property Setter",
+        "filters": [
+            ["name", "in", ["Sales Order Item-delivery_date-reqd"]]
+        ]
+    }
 ]
 
 
@@ -25,6 +31,7 @@ doc_events = {
         "before_trash": "service_workorder.api.hook_validate_sr_cancel_or_delete",
     },
     "Sales Order": {
+        "before_validate": "service_workorder.api.ensure_sales_order_delivery_date",
         "on_trash": "service_workorder.api.clear_sr_links",
         "on_cancel": "service_workorder.api.clear_sr_links",
         "on_update_after_submit": "service_workorder.api.update_amended_link",
@@ -46,6 +53,12 @@ override_doctype_class = {
 app_include_css = [
     "/assets/service_workorder/css/icomoon/style.css"
 ]
+
+scheduler_events = {
+    "daily": [
+        "service_workorder.document_expiry.send_expiry_notifications"
+    ]
+}
 
 
 

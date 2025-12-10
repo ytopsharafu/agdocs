@@ -1,0 +1,14 @@
+[
+  {
+    "docstatus": 0,
+    "doctype": "Property Setter",
+    "doctype_or_field": "DocField",
+    "doc_type": "Sales Order Item",
+    "field_name": "delivery_date",
+    "property": "reqd",
+    "property_type": "Check",
+    "value": "0",
+    "default_value": "0",
+    "name": "Sales Order Item-delivery_date-reqd"
+  }
+]

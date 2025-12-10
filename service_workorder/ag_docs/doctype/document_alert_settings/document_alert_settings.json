@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-10 11:33:18.543284",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enable_email",
+  "test_email",
+  "enable_sms",
+  "test_sms",
+  "default_admin_email",
+  "default_admin_mobile",
+  "cc_emails",
+  "cc_mobiles",
+  "sms_signature",
+  "column_break_zacd"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enable_email",
+   "fieldtype": "Check",
+   "label": "Enable Email Alerts"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_sms",
+   "fieldtype": "Check",
+   "label": "Enable SMS Alerts"
+  },
+  {
+   "fieldname": "default_admin_email",
+   "fieldtype": "Data",
+   "label": "Default Admin Email"
+  },
+  {
+   "fieldname": "default_admin_mobile",
+   "fieldtype": "Data",
+   "label": "Default Admin Mobile"
+  },
+  {
+   "fieldname": "cc_emails",
+   "fieldtype": "Small Text",
+   "label": "CC Emails"
+  },
+  {
+   "fieldname": "cc_mobiles",
+   "fieldtype": "Small Text",
+   "label": "CC Mobile Numbers"
+  },
+  {
+   "fieldname": "sms_signature",
+   "fieldtype": "Data",
+   "label": "SMS Signature"
+  },
+  {
+   "fieldname": "column_break_zacd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "test_email",
+   "fieldtype": "Button",
+   "label": "Test Email"
+  },
+  {
+   "fieldname": "test_sms",
+   "fieldtype": "Button",
+   "label": "Test SMS"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-12-10 11:56:33.214227",
+ "modified_by": "Administrator",
+ "module": "Ag Docs",
+ "name": "Document Alert Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

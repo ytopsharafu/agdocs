@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-10 10:17:17.502349",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "document_detail_section",
+  "document_type",
+  "date_of_issue",
+  "expiry_date",
+  "place_of_issue",
+  "alert_days",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Document Type",
+   "options": "Document Type Master"
+  },
+  {
+   "fieldname": "alert_days",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Alert Days"
+  },
+  {
+   "fieldname": "date_of_issue",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date of Issue"
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "place_of_issue",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Place of Issue",
+   "options": "Country"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "document_detail_section",
+   "fieldtype": "Section Break",
+   "label": "Document Detail"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-10 11:26:17.901777",
+ "modified_by": "Administrator",
+ "module": "Ag Docs",
+ "name": "Document Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
