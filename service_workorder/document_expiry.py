@@ -30,13 +30,17 @@ def send_test_email():
     """
 
     frappe.sendmail(recipients=recipients, subject=subject, message=message)
-    return "OK"
+    return "Test email sent successfully."
 
 
 @frappe.whitelist()
 def send_test_sms():
     """Send a quick test SMS using the admin/CC mobile numbers."""
     settings = frappe.get_single("Document Alert Settings")
+    sms_error = _get_sms_configuration_error()
+    if sms_error:
+        frappe.throw(sms_error)
+
     mobile_numbers = _get_admin_mobiles(settings)
 
     if not mobile_numbers:
@@ -47,8 +51,8 @@ def send_test_sms():
     if settings.sms_signature:
         msg += f" {settings.sms_signature}"
 
-    frappe.send_sms(recipients=mobile_numbers, msg=msg)
-    return "OK"
+    frappe.send_sms(recipients=mobile_numbers, msg=msg, success_msg=False)
+    return "Test SMS sent successfully."
 
 
 def send_expiry_notifications():
@@ -372,7 +376,7 @@ def _collect_contacts(*parts):
         if isinstance(part, (list, tuple, set)):
             tokens = part
         else:
-            tokens = re.split(r"[,\\n]", cstr(part))
+            tokens = re.split(r"[,\n]+", cstr(part))
 
         for token in tokens:
             cleaned = token.strip()
@@ -381,3 +385,33 @@ def _collect_contacts(*parts):
                 seen.add(cleaned)
 
     return recipients
+
+
+def _get_sms_configuration_error():
+    """Return a human friendly message if SMS Settings are incomplete."""
+    required_fields = {
+        "sms_gateway_url": "SMS Gateway URL",
+        "message_parameter": "Message Parameter",
+        "receiver_parameter": "Receiver Parameter",
+    }
+
+    try:
+        values = frappe.db.get_value(
+            "SMS Settings",
+            "SMS Settings",
+            list(required_fields.keys()),
+            as_dict=True,
+        )
+    except frappe.DoesNotExistError:
+        values = None
+
+    if not values:
+        return "SMS Settings are not configured. Update SMS Settings before testing."
+
+    missing = [label for field, label in required_fields.items() if not cstr(values.get(field)).strip()]
+    if missing:
+        if len(missing) == 1:
+            return f"SMS Settings is missing: {missing[0]}"
+        return "SMS Settings is missing: " + ", ".join(missing)
+
+    return ""
