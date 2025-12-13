@@ -13,6 +13,7 @@
   "default_admin_mobile",
   "cc_emails",
   "cc_mobiles",
+  "consolidate_admin_email",
   "sms_signature",
   "column_break_zacd"
  ],
@@ -48,6 +49,13 @@
    "fieldname": "cc_mobiles",
    "fieldtype": "Small Text",
    "label": "CC Mobile Numbers"
+  },
+  {
+   "default": "0",
+   "description": "When enabled, admin and CC recipients receive one consolidated email per run.",
+   "fieldname": "consolidate_admin_email",
+   "fieldtype": "Check",
+   "label": "Consolidate Admin Emails"
   },
   {
    "fieldname": "sms_signature",

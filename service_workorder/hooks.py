@@ -23,6 +23,11 @@ fixtures = [
     }
 ]
 
+doctype_js = {
+    "Sales Order": "public/js/sales_uid_hint.js",
+    "Sales Invoice": "public/js/sales_uid_hint.js",
+}
+
 
 doc_events = {
     "Service Request": {
@@ -43,6 +48,12 @@ doc_events = {
     },
     "Workspace": {
         "before_validate": "service_workorder.workspace_hooks.remove_broken_custom_blocks",
+    },
+    "Customer": {
+        "after_save": "service_workorder.ag_docs.customer_contact_sync.update_document_registration_contacts_from_customer",
+    },
+    "Contact": {
+        "after_save": "service_workorder.ag_docs.customer_contact_sync.update_document_registration_contacts_from_contact",
     },
 }
 override_doctype_class = {

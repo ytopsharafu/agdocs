@@ -15,7 +15,9 @@
   "column_break_ejas",
   "active",
   "enable_email_alert",
+  "employee_email_alert",
   "enable_sms_alert",
+  "employee_sms_alert",
   "remarks",
   "section_break_fkck",
   "document_details"
@@ -70,12 +72,26 @@
   },
   {
    "default": "0",
+   "depends_on": "eval:doc.enable_email_alert",
+   "fieldname": "employee_email_alert",
+   "fieldtype": "Check",
+   "label": "Include Employee Email Alerts"
+  },
+  {
+   "default": "0",
    "fieldname": "enable_sms_alert",
    "fieldtype": "Check",
    "label": "Enable SMS Alerts"
   },
   {
    "default": "0",
+   "depends_on": "eval:doc.enable_sms_alert",
+   "fieldname": "employee_sms_alert",
+   "fieldtype": "Check",
+   "label": "Include Employee SMS Alerts"
+  },
+  {
+   "default": "1",
    "fieldname": "active",
    "fieldtype": "Check",
    "label": "Active"
@@ -99,7 +115,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-10 13:49:54.096139",
+ "modified": "2025-12-12 17:45:33.420837",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Customer Document Registration",

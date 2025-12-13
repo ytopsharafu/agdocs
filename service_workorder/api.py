@@ -85,6 +85,65 @@ def get_customer_contact_info(customer):
     return result
 
 
+@frappe.whitelist()
+def find_existing_document_registration(customer, exclude=None):
+    if not customer:
+        return {}
+
+    filters = {
+        "customer": customer,
+        "docstatus": ("<", 2),
+    }
+
+    if exclude:
+        filters["name"] = ("!=", exclude)
+
+    rows = frappe.get_all(
+        "Customer Document Registration",
+        filters=filters,
+        fields=["name", "customer", "customer_name", "active"],
+        limit=1,
+    )
+
+    return rows[0] if rows else {}
+
+
+@frappe.whitelist()
+def find_document_number_usage(document_number, parent=None, parenttype=None, rowname=None):
+    value = (document_number or "").strip()
+    if not value:
+        return {}
+
+    normalized = value.lower()
+
+    rows = frappe.db.sql(
+        """
+        select
+            name,
+            parent,
+            parenttype,
+            document_number
+        from `tabDocument Detail`
+        where lower(document_number) = %s
+        """,
+        normalized,
+        as_dict=True,
+    )
+
+    for row in rows:
+        if (
+            parent
+            and parenttype
+            and row.parenttype == parenttype
+            and row.parent == parent
+        ):
+            if rowname and row.name == rowname:
+                continue
+        return row
+
+    return {}
+
+
 def ensure_sales_order_delivery_date(doc, _method=None):
     """Fill delivery date automatically so users aren't blocked by mandatory field."""
     if getattr(doc, "delivery_date", None):

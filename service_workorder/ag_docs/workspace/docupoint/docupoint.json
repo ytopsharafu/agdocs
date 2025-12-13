@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"_C7CZ_d5-G\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">DocuPoint</span>\",\"col\":12}},{\"id\":\"KM8OJTFgqI\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Request\",\"col\":3}},{\"id\":\"Z86N9XmAu3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Requests\",\"col\":3}},{\"id\":\"kZLBVL414T\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Completed Requests\",\"col\":3}},{\"id\":\"534xwM1Trw\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Service Request In Draft\",\"col\":3}},{\"id\":\"bsN9duMFuP\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"netwMeuAfr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Service Request\",\"col\":3}},{\"id\":\"L4MvCX-X3Z\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Employee Registration\",\"col\":3}},{\"id\":\"aJXujXvHLL\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"qOrNaEo5IQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer Document Registration\",\"col\":3}},{\"id\":\"WtjKCSUByd\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"BfnoS7SdCg\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Document Type Master\",\"col\":3}},{\"id\":\"fJKHlDU6-A\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Document Alert Settings\",\"col\":3}}]",
+ "content": "[{\"id\":\"_C7CZ_d5-G\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">DocuPoint</span>\",\"col\":12}},{\"id\":\"KM8OJTFgqI\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Request\",\"col\":3}},{\"id\":\"Z86N9XmAu3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Requests\",\"col\":3}},{\"id\":\"kZLBVL414T\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Completed Requests\",\"col\":3}},{\"id\":\"534xwM1Trw\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Service Request In Draft\",\"col\":3}},{\"id\":\"bsN9duMFuP\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"netwMeuAfr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Service Request\",\"col\":3}},{\"id\":\"L4MvCX-X3Z\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Employee Registration\",\"col\":3}},{\"id\":\"aJXujXvHLL\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"qOrNaEo5IQ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer Document Registration\",\"col\":3}},{\"id\":\"WtjKCSUByd\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"BfnoS7SdCg\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Document Type Master\",\"col\":3}},{\"id\":\"fJKHlDU6-A\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Document Alert Settings\",\"col\":3}},{\"id\":\"1tF_ed9Vzf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Document Alert Log\",\"col\":3}}]",
  "creation": "2025-10-22 17:08:41.491275",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "DocuPoint",
  "links": [],
- "modified": "2025-12-10 18:45:38.848569",
+ "modified": "2025-12-12 15:26:12.337891",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "DocuPoint",
@@ -55,6 +55,14 @@
    "doc_view": "List",
    "label": "Document Alert Settings",
    "link_to": "Document Alert Settings",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Document Alert Log",
+   "link_to": "Document Alert Log",
+   "stats_filter": "[]",
    "type": "DocType"
   },
   {

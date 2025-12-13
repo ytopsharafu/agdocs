@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "autoincrement",
+ "creation": "2025-02-14 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "log_time",
+  "status",
+  "section_break_totals",
+  "total_records",
+  "emails_sent",
+  "sms_sent",
+  "column_break_failures",
+  "emails_failed",
+  "sms_failed",
+  "section_break_queue",
+  "email_queue_pending",
+  "sms_pending",
+  "section_break_details",
+  "failure_details",
+  "log_entries"
+ ],
+ "fields": [
+  {
+   "default": "Now",
+   "fieldname": "log_time",
+   "fieldtype": "Datetime",
+   "label": "Log Time",
+   "reqd": 1
+  },
+  {
+   "default": "Success",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Success\nPartial Failures\nFailed\nSkipped",
+   "reqd": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_totals",
+   "fieldtype": "Section Break",
+   "label": "Totals"
+  },
+  {
+   "fieldname": "total_records",
+   "fieldtype": "Int",
+   "label": "Records Evaluated"
+  },
+  {
+   "fieldname": "emails_sent",
+   "fieldtype": "Int",
+   "label": "Emails Sent"
+  },
+  {
+   "fieldname": "sms_sent",
+   "fieldtype": "Int",
+   "label": "SMS Sent"
+  },
+  {
+   "fieldname": "column_break_failures",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "emails_failed",
+   "fieldtype": "Int",
+   "label": "Email Failures"
+  },
+  {
+   "fieldname": "sms_failed",
+   "fieldtype": "Int",
+   "label": "SMS Failures"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_queue",
+   "fieldtype": "Section Break",
+   "label": "Queue Snapshot"
+  },
+  {
+   "fieldname": "email_queue_pending",
+   "fieldtype": "Int",
+   "label": "Email Queue Pending"
+  },
+  {
+   "fieldname": "sms_pending",
+   "fieldtype": "Int",
+   "label": "SMS Pending"
+  },
+  {
+   "fieldname": "section_break_details",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "failure_details",
+   "fieldtype": "Small Text",
+   "label": "Failure Details"
+  },
+  {
+   "fieldname": "log_entries",
+   "fieldtype": "Table",
+   "label": "Recipient Details",
+   "options": "Document Alert Log Detail",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-14 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Ag Docs",
+ "name": "Document Alert Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1
+  }
+ ],
+ "sort_field": "log_time",
+ "sort_order": "DESC",
+ "states": []
+}

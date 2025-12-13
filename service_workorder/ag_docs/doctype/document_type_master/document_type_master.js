@@ -13,6 +13,6 @@ frappe.ui.form.on("Document Type Master", {
 function toggle_document_name_visibility(frm) {
 	if (!frm.fields_dict.document_name) return;
 
-	const readOnly = !frm.is_new();
+	const readOnly = (frm.doc.docstatus || 0) > 0;
 	frm.set_df_property("document_name", "read_only", readOnly ? 1 : 0);
 }

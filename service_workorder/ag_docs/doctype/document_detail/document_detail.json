@@ -8,10 +8,13 @@
  "field_order": [
   "document_detail_section",
   "document_type",
+  "document_number",
   "date_of_issue",
   "expiry_date",
   "place_of_issue",
+  "override_alert_settings",
   "alert_days",
+  "alert_repeat_interval",
   "notes"
  ],
  "fields": [
@@ -23,10 +26,24 @@
    "options": "Document Type Master"
   },
   {
+   "default": "0",
+   "fieldname": "override_alert_settings",
+   "fieldtype": "Check",
+   "label": "Override Alert Settings"
+  },
+  {
    "fieldname": "alert_days",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Alert Days"
+   "label": "Alert Days",
+   "read_only_depends_on": "eval:doc.override_alert_settings!=1"
+  },
+  {
+   "default": "1",
+   "fieldname": "alert_repeat_interval",
+   "fieldtype": "Int",
+   "label": "Reminder Interval (Days)",
+   "read_only_depends_on": "eval:doc.override_alert_settings!=1"
   },
   {
    "fieldname": "date_of_issue",
@@ -44,7 +61,7 @@
    "fieldname": "place_of_issue",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Place of Issue",
+   "label": "Country of Issue",
    "options": "Country"
   },
   {
@@ -56,13 +73,18 @@
    "fieldname": "document_detail_section",
    "fieldtype": "Section Break",
    "label": "Document Detail"
+  },
+  {
+   "fieldname": "document_number",
+   "fieldtype": "Data",
+   "label": "Document Number"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-12-10 11:26:17.901777",
+ "modified": "2025-12-13 17:10:58.106220",
  "modified_by": "Administrator",
  "module": "Ag Docs",
  "name": "Document Detail",

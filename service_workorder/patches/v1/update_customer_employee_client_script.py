@@ -4,7 +4,8 @@ import frappe
 SCRIPT_NAME = "main_emp_filter"
 SCRIPT_CONTENT = """frappe.ui.form.on('Customer Employee Registration', {
     async refresh(frm) {
-        // Only show main employees of the same customer when registering a dependent
+        setup_save_confirmation(frm);
+
         frm.set_query('dep_emp_name', () => {
             if (frm.doc.employee_type !== 'Dependent') return {};
 
@@ -16,34 +17,36 @@ SCRIPT_CONTENT = """frappe.ui.form.on('Customer Employee Registration', {
             return {
                 filters: {
                     customer_name: frm.doc.customer_name,
-                    employee_type: 'Employee'
+                    employee_type: 'Employee',
+                    active: 1
                 }
             };
         });
 
-        // Reset nationality only for brand new documents
         if (frm.is_new()) {
             frm.set_value('nationality', '');
         }
 
         await enforce_dep_no_requirement(frm);
+        apply_uid_requirement(frm);
     },
 
     async customer_name(frm) {
-        // Clear dependent and linked info when customer changes
         frm.set_value('dep_emp_name', '');
         frm.set_value('linked_emp_info', '');
         await enforce_dep_no_requirement(frm);
     },
 
     employee_type(frm) {
-        // Clear dependent and linked info when employee type changes
         frm.set_value('dep_emp_name', '');
         frm.set_value('linked_emp_info', '');
     },
 
+    new_employee(frm) {
+        apply_uid_requirement(frm);
+    },
+
     async dep_emp_name(frm) {
-        // Load linked employee info when dependent employee is selected
         if (!frm.doc.dep_emp_name) {
             frm.set_value('linked_emp_info', '');
             return;
@@ -55,7 +58,7 @@ SCRIPT_CONTENT = """frappe.ui.form.on('Customer Employee Registration', {
                 frm.doc.dep_emp_name
             );
 
-            const asText = (v) => (v === undefined || v === null) ? '' : String(v).trim();
+            const asText = v => (v === undefined || v === null) ? '' : String(v).trim();
 
             const depNo1 = asText(emp.dep_no1 || emp.dep_no_1 || emp.department_no1 || emp.department_no_1);
             const depNo2 = asText(emp.dep_no2 || emp.dep_no_2 || emp.department_no2 || emp.department_no_2);
@@ -74,13 +77,45 @@ SCRIPT_CONTENT = """frappe.ui.form.on('Customer Employee Registration', {
         }
     },
 
-    // -----------------------------------------------------
-    // CLEAR FORM AFTER SAVE -> Opens a new blank document
-    // -----------------------------------------------------
-    after_save(frm) {
-        frappe.new_doc('Customer Employee Registration');
+    before_save(frm) {
+        frm.__was_insert = frm.is_new();
+    },
+
+    async after_save(frm) {
+        const justCreated = Boolean(frm.__was_insert);
+        delete frm.__was_insert;
+
+        const choice = frm.__post_save_choice || 'stay';
+        frm.__post_save_choice = null;
+
+        const defaultMessage = justCreated ? __('Saved Successfully') : __('Updated Successfully');
+        const defaultIndicator = justCreated ? 'green' : 'blue';
+
+        if (!justCreated) {
+            if (choice === 'update') {
+                frappe.show_alert({
+                    message: defaultMessage,
+                    indicator: defaultIndicator
+                });
+            }
+            return;
+        }
+
+        if (choice === 'new') {
+            frappe.show_alert({
+                message: defaultMessage,
+                indicator: defaultIndicator
+            });
+            await frappe.new_doc('Customer Employee Registration');
+        } else {
+            frappe.show_alert({
+                message: __('Staying on current record'),
+                indicator: 'blue'
+            });
+        }
     }
 });
+
 
 async function enforce_dep_no_requirement(frm) {
     const customer = frm.doc.customer_name;
@@ -123,6 +158,67 @@ function apply_dep_no_requirement(frm, required) {
     if (needsDepNo && !frm.doc.dep_no) {
         frm.set_value('dep_no', 1);
     }
+}
+
+function apply_uid_requirement(frm) {
+    const uidRequired = !cint(frm.doc.new_employee);
+
+    frm.toggle_reqd('uid_no', uidRequired);
+    frm.set_df_property(
+        'uid_no',
+        'description',
+        uidRequired ? '' : __('UID not required while New Employee is enabled.')
+    );
+}
+
+function setup_save_confirmation(frm) {
+    if (frm.__save_interceptor_attached) {
+        return;
+    }
+
+    const originalSave = frm.save.bind(frm);
+
+    frm.save = function (...args) {
+        if (frm.doc.docstatus !== 0 || frm.__skip_save_confirm) {
+            return originalSave(...args);
+        }
+
+        const isInsert = frm.is_new();
+
+        return new Promise((resolve, reject) => {
+            const proceed = (choice) => {
+                frm.__post_save_choice = choice;
+                frm.__skip_save_confirm = true;
+                Promise.resolve(originalSave(...args))
+                    .then(resolve)
+                    .catch(reject)
+                    .finally(() => {
+                        frm.__skip_save_confirm = false;
+                    });
+            };
+
+            const cancel = () => {
+                frm.__post_save_choice = 'cancelled';
+                resolve();
+            };
+
+            if (isInsert) {
+                frappe.confirm(
+                    __('Save this record and create another?'),
+                    () => proceed('new'),
+                    () => proceed('stay')
+                );
+            } else {
+                frappe.confirm(
+                    __('Do you want to update this record?'),
+                    () => proceed('update'),
+                    cancel
+                );
+            }
+        });
+    };
+
+    frm.__save_interceptor_attached = true;
 }
 """
 
