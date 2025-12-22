@@ -33,34 +33,44 @@ RESPONSIVE_CARD_CSS = """@import url('/assets/service_workorder/css/icomoon/styl
 
 :host .dashboard-card {
     width: clamp(88px, 9vw, 132px);
-    height: clamp(88px, 9vw, 132px);
-    border-radius: 18px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: clamp(10px, 0.9vw, 16px);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    gap: clamp(4px, 0.8vw, 8px);
+    padding: clamp(6px, 0.9vw, 12px);
+    transition: transform 0.18s ease, color 0.18s ease;
     cursor: pointer;
     user-select: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 :host .dashboard-icon {
-    font-size: clamp(24px, 2.6vw, 38px) !important;
+    font-size: 34px !important;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 6px;
 }
 
 :host .dashboard-title {
-    font-size: clamp(12px, 1.15vw, 15px);
+    font-size: clamp(11px, 1vw, 13px);
     font-weight: 600;
-    line-height: 1.25;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @media (max-width: 1700px) {
     :host .dashboard-card {
         width: clamp(82px, 9vw, 120px);
-        height: clamp(82px, 9vw, 120px);
     }
 }
 
@@ -72,32 +82,20 @@ RESPONSIVE_CARD_CSS = """@import url('/assets/service_workorder/css/icomoon/styl
 
     :host .dashboard-card {
         width: clamp(78px, 22vw, 108px);
-        height: clamp(78px, 22vw, 108px);
     }
 }
 
 @media (max-width: 768px) {
     :host .dashboard-card {
         width: clamp(72px, 38vw, 100px);
-        height: clamp(72px, 38vw, 100px);
     }
-}
-
-/* light theme (default) */
-:host .dashboard-card {
-    background: #f1f7ff;
-    border: 1px solid #d5e3ff;
-    color: #1b1b1b;
-    box-shadow: none;
 }
 
 :host .dashboard-card:hover {
     transform: translateY(-3px);
-    background: #e5efff;
-    border-color: #c0d7ff;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* light theme (default) */
 :host .dashboard-icon {
     color: #1284e4 !important;
 }
@@ -106,26 +104,29 @@ RESPONSIVE_CARD_CSS = """@import url('/assets/service_workorder/css/icomoon/styl
     color: #1b1b1b;
 }
 
+:host .dashboard-card:hover .dashboard-icon {
+    color: #0a6fcc !important;
+}
+
+:host .dashboard-card:hover .dashboard-title {
+    color: #040404;
+}
+
 /* dark theme */
-:host-context([data-theme='dark']) .dashboard-card {
-    background: #111214;
-    border: 1px solid #25262b;
-    color: #f3f3f3;
-    box-shadow: none;
-}
-
-:host-context([data-theme='dark']) .dashboard-card:hover {
-    background: #1a1b1f;
-    border-color: #3a3b42;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
-}
-
 :host-context([data-theme='dark']) .dashboard-icon {
     color: #f5f5f5 !important;
 }
 
 :host-context([data-theme='dark']) .dashboard-title {
     color: #ffffff;
+}
+
+:host-context([data-theme='dark']) .dashboard-card:hover .dashboard-icon {
+    color: #80bfff !important;
+}
+
+:host-context([data-theme='dark']) .dashboard-card:hover .dashboard-title {
+    color: #dfe9ff;
 }
 """
 

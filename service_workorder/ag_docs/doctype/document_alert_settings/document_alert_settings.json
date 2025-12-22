@@ -8,6 +8,7 @@
   "enable_email",
   "test_email",
   "enable_sms",
+  "enable_completion_warning",
   "test_sms",
   "default_admin_email",
   "default_admin_mobile",
@@ -29,6 +30,13 @@
    "fieldname": "enable_sms",
    "fieldtype": "Check",
    "label": "Enable SMS Alerts"
+  },
+  {
+   "default": "1",
+   "description": "Show a warning when marking the 4th completed work item for an employee.",
+   "fieldname": "enable_completion_warning",
+   "fieldtype": "Check",
+   "label": "Warn on 4+ Completed Items"
   },
   {
    "fieldname": "default_admin_email",
