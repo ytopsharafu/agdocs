@@ -1,6 +1,7 @@
 import frappe
+from frappe import _
 from frappe.contacts.doctype.contact.contact import get_default_contact
-from frappe.utils import nowdate, add_days
+from frappe.utils import nowdate, add_days, cint
 
 
 # ============================================================
@@ -144,6 +145,21 @@ def find_document_number_usage(document_number, parent=None, parenttype=None, ro
     return {}
 
 
+@frappe.whitelist()
+@frappe.read_only()
+def get_uid_length_limits():
+    settings = frappe.get_cached_doc("Document Alert Settings")
+    min_length = cint(settings.get("uid_min_length")) or 7
+    max_length = cint(settings.get("uid_max_length")) or 15
+
+    if min_length < 1:
+        min_length = 1
+    if max_length < min_length:
+        max_length = min_length
+
+    return {"min": min_length, "max": max_length}
+
+
 def ensure_sales_order_delivery_date(doc, _method=None):
     """Fill delivery date automatically so users aren't blocked by mandatory field."""
     if getattr(doc, "delivery_date", None):
@@ -192,6 +208,104 @@ def get_service_charge_from_slab(slab=None, item=None, slab_name=None, item_code
 
 
 # ============================================================
+# PRODUCT BUNDLE HELPER FOR SERVICE REQUEST JOBS
+# ============================================================
+@frappe.whitelist()
+def get_product_bundle_items(product_bundle):
+    if not product_bundle:
+        return []
+
+    bundle = frappe.get_doc("Product Bundle", product_bundle)
+    items = []
+    for row in bundle.items:
+        if not row.item_code:
+            continue
+        item_info = frappe.db.get_value(
+            "Item",
+            row.item_code,
+            ["item_name", "is_sales_item"],
+            as_dict=True,
+        )
+        if not (item_info and cint(item_info.is_sales_item) != 0):
+            continue
+        items.append(
+            {
+                "item_code": row.item_code,
+                "item_name": item_info.item_name or row.item_code,
+                "qty": row.qty or 1,
+                "description": row.description or "",
+            }
+        )
+    return items
+
+
+@frappe.whitelist()
+def check_employee_completion_warning(employee=None, service_request=None, completed_in_doc=0):
+    if not employee:
+        return {}
+
+    details = frappe.db.get_value(
+        "Customer Employee Registration",
+        employee,
+        ["new_employee"],
+        as_dict=True,
+    )
+    if not details or cint(details.get("new_employee")) == 0:
+        return {}
+
+    settings = frappe.get_cached_doc("Document Alert Settings")
+    if not cint(settings.get("enable_completion_warning")):
+        return {}
+
+    threshold = cint(settings.get("completion_warning_threshold")) or 4
+    if threshold <= 0:
+        threshold = 4
+
+    window_days = cint(settings.get("completion_warning_window")) or 0
+
+    completed_in_doc = cint(completed_in_doc or 0)
+
+    exclude_clause = ""
+    filters = [employee]
+    if service_request:
+        exclude_clause = "and sr.name != %s"
+        filters.append(service_request)
+
+    date_clause = ""
+    if window_days > 0:
+        cutoff_date = add_days(nowdate(), -window_days)
+        date_clause = "and coalesce(item.item_date, sr.modified) >= %s"
+        filters.append(cutoff_date)
+
+    count = frappe.db.sql(
+        f"""
+        select count(*)
+        from `tabService Request Item` item
+        inner join `tabService Request` sr on sr.name = item.parent
+        where item.status = 'Completed'
+          and sr.dep_emp_name = %s
+          and coalesce(sr.docstatus, 0) < 2
+          {exclude_clause}
+          {date_clause}
+        """,
+        filters,
+    )[0][0]
+
+    total = count + completed_in_doc
+    if total >= threshold:
+        timeframe = ""
+        if window_days > 0:
+            timeframe = _(" in the last {0} days").format(window_days)
+        return {
+            "warning": _(
+                "Employee {0} already has {1} completed work items{2} across Service Requests. Please update the UID number as soon as possible."
+            ).format(employee, total, timeframe)
+        }
+
+    return {}
+
+
+# ============================================================
 # GET SALES TAX TEMPLATE USING CORRECT FIELD
 # ============================================================
 @frappe.whitelist()
@@ -235,6 +349,7 @@ def create_sales_order_from_service_request(service_request):
     so.custom_employee_type = sr.employee_type or ""
     so.custom_dep_no = sr.department_no or ""
     so.custom_uid_no = sr.uid_no or ""
+    so.custom_service_request = sr.name
 
     customer_group = frappe.db.get_value("Customer", sr.customer, "customer_group")
     if customer_group == "VAT":
@@ -283,7 +398,11 @@ def create_sales_order_from_service_request(service_request):
     so.insert(ignore_permissions=True)
     so.save(ignore_permissions=True)
 
-    frappe.db.set_value("Service Request", sr.name, "sales_order_ref", so.name)
+    frappe.db.set_value("Service Request", sr.name, {
+        "sales_order_ref": so.name,
+        "billing_status": "Sales Order Created",
+    })
+    _refresh_service_request_billing(sr.name)
 
     # Return the synced document so client scripts can route without extra fetches
     return so.as_dict()
@@ -297,6 +416,18 @@ def create_sales_invoice_from_service_request(service_request):
     sr = frappe.get_doc("Service Request", service_request)
 
     _check_existing_links(sr)
+
+    incomplete = [
+        row.idx or row.item_code
+        for row in sr.work_details
+        if (row.status or "").strip().lower() != "completed"
+    ]
+    if incomplete:
+        frappe.throw(
+            _("Cannot create Sales Invoice while the following rows are not Completed: {0}").format(
+                ", ".join(str(v) for v in incomplete)
+            )
+        )
 
     si = frappe.new_doc("Sales Invoice")
     si.customer = sr.customer
@@ -313,6 +444,7 @@ def create_sales_invoice_from_service_request(service_request):
     si.custom_employee_type = sr.employee_type or ""
     si.custom_dep_no = sr.department_no or ""
     si.custom_uid_no = sr.uid_no or ""
+    si.custom_service_request = sr.name
 
     customer_group = frappe.db.get_value("Customer", sr.customer, "customer_group")
     if customer_group == "VAT":
@@ -360,7 +492,11 @@ def create_sales_invoice_from_service_request(service_request):
     si.insert(ignore_permissions=True)
     si.save(ignore_permissions=True)
 
-    frappe.db.set_value("Service Request", sr.name, "sales_invoice_ref", si.name)
+    frappe.db.set_value("Service Request", sr.name, {
+        "sales_invoice_ref": si.name,
+        "billing_status": "Invoiced",
+    })
+    _refresh_service_request_billing(sr.name)
 
     return si.as_dict()
 
@@ -374,11 +510,13 @@ def clear_sr_links(doc, event=None):
         sr = frappe.db.get_value("Service Request", {"sales_order_ref": doc.name}, "name")
         if sr:
             frappe.db.set_value("Service Request", sr, "sales_order_ref", "")
+            _refresh_service_request_billing(sr)
 
     if doc.doctype == "Sales Invoice":
         sr = frappe.db.get_value("Service Request", {"sales_invoice_ref": doc.name}, "name")
         if sr:
             frappe.db.set_value("Service Request", sr, "sales_invoice_ref", "")
+            _refresh_service_request_billing(sr)
 
 
 @frappe.whitelist()
@@ -393,12 +531,13 @@ def update_amended_link(doc, event=None):
         sr = frappe.db.get_value("Service Request", {"sales_order_ref": old}, "name")
         if sr:
             frappe.db.set_value("Service Request", sr, "sales_order_ref", new)
+            _refresh_service_request_billing(sr)
 
     if doc.doctype == "Sales Invoice":
         sr = frappe.db.get_value("Service Request", {"sales_invoice_ref": old}, "name")
         if sr:
             frappe.db.set_value("Service Request", sr, "sales_invoice_ref", new)
-
+            _refresh_service_request_billing(sr)
 
 @frappe.whitelist()
 def validate_sr_cancel_or_delete(sr_name):
@@ -419,6 +558,23 @@ def validate_sr_cancel_or_delete(sr_name):
             frappe.throw(
                 f"❗ Cannot cancel/delete Service Request while Sales Invoice <b>{doc.sales_invoice_ref}</b> is active."
             )
+
+
+def _refresh_service_request_billing(sr_name):
+    try:
+        doc = frappe.get_doc("Service Request", sr_name)
+    except frappe.DoesNotExistError:
+        return
+
+    if hasattr(doc, "_derive_billing_status"):
+        status = doc._derive_billing_status()
+        frappe.db.set_value(
+            "Service Request",
+            sr_name,
+            "billing_status",
+            status,
+            update_modified=False,
+        )
 
     return True
 

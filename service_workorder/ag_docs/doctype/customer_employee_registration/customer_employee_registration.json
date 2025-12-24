@@ -38,7 +38,8 @@
   "extra_email",
   "extra_mobile",
   "notify_employee_email",
-  "notify_employee_sms"
+  "notify_employee_sms",
+  "connections_tab"
  ],
  "fields": [
   {
@@ -237,11 +238,23 @@
    "fieldname": "new_employee",
    "fieldtype": "Check",
    "label": "New Employee"
+  },
+  {
+   "fieldname": "connections_tab",
+   "fieldtype": "Tab Break",
+   "label": "Connections",
+   "show_dashboard": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "links": [],
+ "links": [
+  {
+   "group": "Service Requests",
+   "link_doctype": "Service Request",
+   "link_fieldname": "dep_emp_name"
+  }
+ ],
  "modified": "2025-12-12 18:00:38.145252",
  "modified_by": "Administrator",
  "module": "Ag Docs",

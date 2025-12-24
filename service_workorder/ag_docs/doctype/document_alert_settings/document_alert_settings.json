@@ -9,6 +9,12 @@
   "test_email",
   "enable_sms",
   "enable_completion_warning",
+  "enable_log_email",
+  "log_email_mode",
+  "completion_warning_threshold",
+  "completion_warning_window",
+  "uid_min_length",
+  "uid_max_length",
   "test_sms",
   "default_admin_email",
   "default_admin_mobile",
@@ -33,10 +39,55 @@
   },
   {
    "default": "1",
-   "description": "Show a warning when marking the 4th completed work item for an employee.",
+   "description": "Show a warning when an employee reaches the configured number of completed work items.",
    "fieldname": "enable_completion_warning",
    "fieldtype": "Check",
-   "label": "Warn on 4+ Completed Items"
+   "label": "Warn on Completed Items"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_log_email",
+   "fieldtype": "Check",
+   "label": "Email Alert Logs"
+  },
+  {
+   "default": "Failures Only",
+   "depends_on": "eval:doc.enable_log_email",
+   "fieldname": "log_email_mode",
+   "fieldtype": "Select",
+   "label": "Log Email Mode",
+   "options": "Failures Only\nAlways",
+   "description": "Send summary emails only on failures or after every alert run."
+  },
+  {
+   "default": "4",
+   "depends_on": "eval:doc.enable_completion_warning",
+   "fieldname": "completion_warning_threshold",
+   "fieldtype": "Int",
+   "label": "Warning Threshold",
+   "description": "Warn when an employee reaches this many completed items (current Service Request included)."
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.enable_completion_warning",
+   "fieldname": "completion_warning_window",
+   "fieldtype": "Int",
+   "label": "Limit to Past Days",
+   "description": "Count completed items from the last N days (0 = use entire history)."
+  },
+  {
+   "default": "5",
+   "fieldname": "uid_min_length",
+   "fieldtype": "Int",
+   "label": "UID Minimum Length",
+   "description": "Smallest allowed length for UID numbers (in digits)."
+  },
+  {
+   "default": "15",
+   "fieldname": "uid_max_length",
+   "fieldtype": "Int",
+   "label": "UID Maximum Length",
+   "description": "Largest allowed length for UID numbers (in digits)."
   },
   {
    "fieldname": "default_admin_email",

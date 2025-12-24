@@ -3,11 +3,13 @@ import re
 from typing import Dict, List, Sequence
 
 import frappe
+from frappe import _
 from frappe.utils import (
     cint,
     cstr,
     escape_html,
     formatdate,
+    format_datetime,
     get_link_to_form,
     getdate,
     nowdate,
@@ -795,8 +797,57 @@ def _create_alert_log(context):
     if detail_rows:
         payload["log_entries"] = detail_rows
 
+    doc = None
+
     try:
         doc = frappe.get_doc(payload)
         doc.insert(ignore_permissions=True)
     except Exception:
         frappe.log_error(frappe.get_traceback(), "Failed to insert Document Alert Log")
+        return
+
+    _maybe_email_alert_log(doc)
+
+
+def _maybe_email_alert_log(log_doc):
+    try:
+        settings = frappe.get_cached_doc("Document Alert Settings")
+    except frappe.DoesNotExistError:
+        return
+
+    if not cint(settings.get("enable_log_email")):
+        return
+
+    status = log_doc.status or "Skipped"
+    mode = (settings.get("log_email_mode") or "Failures Only").strip()
+    failures_only = mode != "Always"
+    if failures_only and status not in ("Failed", "Partial Failures"):
+        return
+
+    recipients = _get_admin_emails(settings)
+    if not recipients:
+        return
+
+    subject = _("Document Alerts: {0} ({1})").format(
+        status,
+        format_datetime(log_doc.log_time),
+    )
+
+    summary = [
+        _("Total Records: {0}").format(log_doc.total_records or 0),
+        _("Emails Sent: {0} | SMS Sent: {1}").format(log_doc.emails_sent or 0, log_doc.sms_sent or 0),
+        _("Email Failures: {0} | SMS Failures: {1}").format(log_doc.emails_failed or 0, log_doc.sms_failed or 0),
+    ]
+
+    if log_doc.failure_details:
+        summary.append("")
+        summary.append(_("Failures:"))
+        summary.extend(log_doc.failure_details.split("\n"))
+
+    message = "<br>".join(escape_html(line) for line in summary if line is not None)
+
+    frappe.sendmail(
+        recipients=recipients,
+        subject=subject,
+        message=message,
+    )
